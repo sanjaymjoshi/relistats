@@ -26,13 +26,13 @@ def confidence(n: int, f: int, r: float) -> Optional[float]:
 
 
 def _wilson_center(p, n, c):
-    """Center of Wilson score interval"""
+    """Center of Wilson score interval. See comment above."""
     z = st.norm.ppf(c)
     return (p + z * z / (2 * n)) / (1 + z * z / n)
 
 
 def _wilson_lower(p, n, c):
-    """Lower bound of Wilson score interval"""
+    """Lower bound of Wilson score interval. See comment above."""
     z = st.norm.ppf(c)
     p50 = _wilson_center(p, n, c)
     part2 = z / (1 + z * z / n) * sqrt(p * (1 - p) / n + z * z / (4 * n * n))
@@ -40,7 +40,7 @@ def _wilson_lower(p, n, c):
 
 
 def _wilson_lower_corrected(p, n, c):
-    """Lower bound of Wilson score interval, with continuity correction"""
+    """Lower bound of Wilson score interval, with continuity correction."""
     return _wilson_lower(max(p - 1 / (2 * n), 0), n, c)
 
 
@@ -119,9 +119,6 @@ def assurance(n: int, f: int, tol=0.001) -> Optional[float]:
         _assurance_fn,
         a=0,  # Lowest possible value
         b=1,  # Highest possible value
-        args=(
-            n,
-            f,
-        ),
+        args=(n, f),
         xtol=tol,
     )

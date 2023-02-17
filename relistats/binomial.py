@@ -61,7 +61,6 @@ def reliability_closed(n: int, f: int, c: float) -> Optional[float]:
 
 def _reliability_fn(x: float, n: int, f: int, c: float) -> float:
     """Function to find roots of c = confidence(n, f, x)"""
-    print(n, f, x, c)
     c_hat = confidence(n, f, x) or 0
     return c_hat - c
 

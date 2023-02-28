@@ -9,7 +9,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, os.path.abspath(".")
+sys.path.insert(0, os.path.abspath(".."))
+
 
 project = "Reliability Statistics"
 copyright = "2023, Sanjay M Joshi"

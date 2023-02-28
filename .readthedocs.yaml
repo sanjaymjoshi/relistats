@@ -32,5 +32,5 @@ python:
       extra_requirements:
         - docs
     - method: pip
-      path: package
+      path: relistats
 #   - requirements: docs/requirements.txt

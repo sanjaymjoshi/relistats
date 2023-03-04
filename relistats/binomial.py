@@ -1,3 +1,7 @@
+""" Reliability Engineering Statistics for Binomial Distributions
+
+Also known as Bernoulli Trials.
+"""
 from math import sqrt
 from typing import Optional
 

@@ -4,6 +4,8 @@ relistats package
 Submodules
 ----------
 
+The submodules are as follows.
+
 relistats.binomial module
 -------------------------
 

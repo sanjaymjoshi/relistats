@@ -5,7 +5,7 @@ The relistat library provides methods to compute reliability engineering statist
 
 See:
 
-- `Usage <docs/source/usage.rst>`_ for installation and example
+- `Usage <docs/source/usage.rst>`_ for installation and how to use
 
 - `Background <docs/source/background.rst>`_ for concepts and mathematical background.
 

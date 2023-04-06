@@ -60,5 +60,5 @@ offers a numerical method :meth:`relistats.binomial.assurance` that allows
 tuning desired accuracy level.
 
 See paper `Computation of Reliability Statistics for Success-Failure Experiments
-<https://arxiv.org/submit/4768869/view>`_ for more information.
+<https://doi.org/10.48550/arXiv.2303.03167>`_ for more information.
 

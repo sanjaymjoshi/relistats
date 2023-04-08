@@ -40,9 +40,9 @@ Example usage in a python file:
 See
 
 - Paper: S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
-  `arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_, , March 2023.
+  `arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_, March 2023.
 
-- Jupyter notebook version showing how to use this library:
+- Jupyter notebook showing how to use this library:
   `relistats_notebook <https://github.com/sanjaymjoshi/relistats_notebook>`_
 
 - Interactive online version of the Jupyter notebook on
@@ -50,7 +50,7 @@ See
 
 Additional documentation:
 
-- `Usage <docs/source/usage.rst>`_ for installation and how to use
+- `Usage <docs/source/usage.rst>`_ for installation and how to use.
 
 - `Background <docs/source/background.rst>`_ for concepts and mathematical background.
 

@@ -1,32 +1,8 @@
 Background
 ==========
 
-Reliability engineering deals with estimating parameters or qualities of a product or
-process or experiment. For simplicity, we assume that all units of a product or results
-of an experiment are random variables. Collectively, let's call them samples.
-We assume that the samples are independent (one sample has no effect on another
-sample) and identically distributed (the reliability or properties of underlying
-random variable stay the same for each sample).
-
-Concepts
---------
-- Reliability is probability of success. The math assumes infinite number of samples,
-  but we can get access to only a finite number of samples. Therefore, we can compute
-  only an estimate of the actual reliability. Based on the number of samples, we
-  qualify the quality of this estimate using *confidence*.
-
-- Confidence in reliability is probability that the actual reliability of the
-  population is at least the provided reliability level. 
-  For example, we can say "If we see zero failures in 10 samples of a success-failure
-  experiment, we have 95% confidence that the reliability is at least about 74%".
-
-- Assurance simplifies reliability and confidence by setting both of them the same.
-  The result is just one number that is easier to communicate. For example, 90%
-  assurance means 90% reliability with 90% confidence. Given the number of samples
-  and number of failures, assurance is just one number.
-
-The calculations and concepts change a bit based on the properties of underlying
-random variables.
+Computation of the concepts described in `README <README.rst>`_ depend on
+the properties of underlying random variables.
 
 - For samples with binary results, such as pass/fail or success/failure, we
   typically assume *binomial distribution*.

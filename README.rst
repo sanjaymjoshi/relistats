@@ -40,13 +40,13 @@ Example usage in a python file:
 See
 
 - Paper: S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
-`arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_ 
+  `arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_ 
 
-- `relistats_notebook <https://github.com/sanjaymjoshi/relistats_notebook>`_
-project for how to use this library in a notebook.
+- Jupyter notebook version showing how to use thir library:
+  `relistats_notebook <https://github.com/sanjaymjoshi/relistats_notebook>`_
 
-- Interactive online version of the notebook on `Google Colab
-<https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial.ipynb>`_.
+- Interactive online version of the Jupyter notebook on
+  `Google Colab <https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial.ipynb>`_.
 
 Additional documentation:
 

@@ -7,14 +7,14 @@ S.M. Joshi, "Computation of Reliability Statistics for
 Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
 https://doi.org/10.48550/arXiv.2303.03167
 """
-from math import sqrt
+from math import sqrt, floor
 from typing import Optional
 
 import scipy.optimize as opt
 import scipy.stats as st
 
 
-def confidence(n: int, f: int, r: float) -> Optional[float]:
+def confidence(n: int, f: int, r: float, m: int=None) -> Optional[float]:
     """Confidence [0, 1] in reliability r using closed-form expression.
 
     :param n: number of samples
@@ -23,14 +23,46 @@ def confidence(n: int, f: int, r: float) -> Optional[float]:
     :type f: int, >=0
     :param r: reliability level
     :type r: float, [0, 1]
+    :param m: remaining samples in population (None for infinite)
+    :type m: int, >= 0, optional
     :return: Confidence or None if it could not be computed
     :rtype: float, optional
     """
     if n <= 0 or f < 0 or r < 0 or r > 1:
         return None
+    
+    if m is not None:        
+        # Finite population case
+        if m < 0:
+            return None
+        total_samples = n + m
+        max_f_at_r = floor(total_samples * r)
+        num_failures = max_f_at_r - f # number of failures we can afford
+        num_samples = m # in these many samples
+
+        if num_failures < 0:
+            # got too many failures already, zero confidence
+            return 0
+        
+        if num_failures >= m:
+            # even if all remaining samples fail, we are still ok. Full confidence.
+            return 1
+        
+        if num_failures == 0:
+            # Cannot calculate probability of zero failures, hence bump up the 
+            # remaining samples by 1 and calculate probability that there is exactly
+            # 1 failure
+            num_samples = num_samples + 1
+            num_failures = 1
+    else:
+        # Infinite population
+        num_failures = f
+        num_samples = n
+
     # Scipy's binom object provides 'survival function', which is 1 - CDF.
     prob_failure = 1 - r
-    return st.binom.sf(f, n, prob_failure)
+    return st.binom.sf(num_failures, num_samples, prob_failure)
+
 
 
 def _wilson_center(p, n, c):

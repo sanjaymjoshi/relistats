@@ -1,4 +1,5 @@
 from dataclasses import asdict, dataclass
+from typing import Optional
 
 import pytest
 
@@ -12,33 +13,34 @@ from relistats.binomial import (
 
 
 @dataclass
-class NFRC:
+class NFRMC:
     n: int
     f: int
     r: float
+    m: Optional[int]
     c: float
 
 
-test_nfrc = (
-    NFRC(1, 0, 0.5, 0.5),
-    NFRC(2, 0, 0.5, 0.75),
-    NFRC(2, 1, 0.5, 0.25),
-    NFRC(8, 0, 0.7, 0.942),
-    NFRC(8, 0, 0.9, 0.570),
-    NFRC(10, 9, 0.1, 0.349),
-    NFRC(100, 10, 0.9, 0.417),
-    NFRC(1000, 100, 0.9, 0.473),
-    NFRC(10000, 1000, 0.9, 0.492),
+test_nfrmc = (
+    NFRMC(1, 0, 0.5, None, 0.5),
+    NFRMC(2, 0, 0.5, None, 0.75),
+    NFRMC(2, 1, 0.5, None, 0.25),
+    NFRMC(8, 0, 0.7, None, 0.942),
+    NFRMC(8, 0, 0.9, None, 0.570),
+    NFRMC(10, 9, 0.1, None, 0.349),
+    NFRMC(100, 10, 0.9, None, 0.417),
+    NFRMC(1000, 100, 0.9, None, 0.473),
+    NFRMC(10000, 1000, 0.9, None, 0.492),
 )
 
 
-def test_confidence() -> None:
+def test_confidence_inf() -> None:
 
     # Confidence computation is exact, so set the tolerance tight
     ABS_TOL_CONFIDENCE = 0.001
-    for x in test_nfrc:
+    for x in test_nfrmc:
         print(f"Testing confidence: {asdict(x)}")
-        assert confidence(x.n, x.f, x.r) == pytest.approx(x.c, abs=ABS_TOL_CONFIDENCE)
+        assert confidence(x.n, x.f, x.r, x.m) == pytest.approx(x.c, abs=ABS_TOL_CONFIDENCE)
 
     assert confidence(2, 2, 0.5) == 0
     assert confidence(2, 3, 0.5) == 0
@@ -50,12 +52,17 @@ def test_confidence() -> None:
     assert confidence(-2, 0, 0.5) is None
     assert confidence(2, 0, -0.5) is None
 
+def test_confidence_finite() -> None:
+
+    assert confidence(2, 2, 0.5, -1 ) is None
+    assert confidence(10, 0, 0.9, 0 ) == 1
+    assert confidence(10, 0, 0.9, 1 ) == 1
 
 def test_reliability_closed() -> None:
     # Reliability closed form computation is approximate, so set the tolerance loose
     ABS_TOL_RELIABILITY_CLOSED = 0.03
 
-    for x in test_nfrc:
+    for x in test_nfrmc:
         print(f"Testing reliability: {asdict(x)}")
         c1 = confidence(x.n, x.f, x.r)
         if c1 is None:
@@ -73,7 +80,7 @@ def test_reliability_closed() -> None:
 def test_reliability_optim() -> None:
     # Reliability computation via optimization is more accurate, so set the tolerance tight
     ABS_TOL_RELIABILITY_OPTIM = 0.001
-    for x in test_nfrc:
+    for x in test_nfrmc:
         print(f"Testing reliability: {asdict(x)}")
         c1 = confidence(x.n, x.f, x.r)
         if c1 is None:
@@ -93,7 +100,7 @@ def test_reliability_optim() -> None:
 def test_reliability() -> None:
     # Reliability computation should be accurate, so set the tolerance tight
     ABS_TOL_RELIABILITY = 0.001
-    for x in test_nfrc:
+    for x in test_nfrmc:
         print(f"Testing reliability: {asdict(x)}")
         c1 = confidence(x.n, x.f, x.r)
         if c1 is None:

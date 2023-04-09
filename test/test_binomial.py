@@ -34,7 +34,7 @@ test_nfrmc = (
 )
 
 
-def test_confidence_inf() -> None:
+def test_confidence() -> None:
 
     # Confidence computation is exact, so set the tolerance tight
     ABS_TOL_CONFIDENCE = 0.001
@@ -42,6 +42,7 @@ def test_confidence_inf() -> None:
         print(f"Testing confidence: {asdict(x)}")
         assert confidence(x.n, x.f, x.r, x.m) == pytest.approx(x.c, abs=ABS_TOL_CONFIDENCE)
 
+    # Infinite samples corner cases
     assert confidence(2, 2, 0.5) == 0
     assert confidence(2, 3, 0.5) == 0
     assert confidence(20, 0, 0) == 1
@@ -52,8 +53,7 @@ def test_confidence_inf() -> None:
     assert confidence(-2, 0, 0.5) is None
     assert confidence(2, 0, -0.5) is None
 
-def test_confidence_finite() -> None:
-
+    # Finite samples corner cases
     assert confidence(2, 2, 0.5, -1 ) is None
     assert confidence(10, 0, 0.9, 0 ) == 1
     assert confidence(10, 0, 0.9, 1 ) == 1

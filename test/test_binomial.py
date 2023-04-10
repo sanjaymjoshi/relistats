@@ -50,6 +50,7 @@ def test_confidence() -> None:
         print(f"Testing confidence: {asdict(x)}")
         assert confidence(x.n, x.f, x.r, x.m) == pytest.approx(x.c, abs=ABS_TOL_CONFIDENCE)
 
+def test_confidence_corner_inf() -> None:
     # Infinite samples corner cases
     assert confidence(2, 2, 0.5) == 0
     assert confidence(2, 3, 0.5) == 0
@@ -61,6 +62,8 @@ def test_confidence() -> None:
     assert confidence(-2, 0, 0.5) is None
     assert confidence(2, 0, -0.5) is None
 
+
+def test_confidence_corner_finite() -> None:
     # Finite samples corner cases
     assert confidence(2, 2, 0.5, -1 ) is None
     assert confidence(10, 0, 0.9, 0 ) == 1

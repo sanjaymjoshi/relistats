@@ -70,6 +70,7 @@ def test_confidence() -> None:
     assert confidence(8, 0, 0.5, 4 ) == 1
     assert confidence(8, 1, 0.5, 4 ) == 1
     assert confidence(8, 2, 0.5, 4 ) == 1
+    assert confidence(8, 7, 0.5, 4 ) == 0
 
 def test_reliability_closed() -> None:
     # Reliability closed form computation is approximate, so set the tolerance loose

@@ -35,6 +35,7 @@ test_nfrmc = (
 
     # finite population
     NFRMC(8, 3, 0.5, 4, 0.973),
+    NFRMC(8, 3, 0.5, 8, 0.863),
     NFRMC(8, 4, 0.5, 4, 0.363),
     NFRMC(8, 5, 0.5, 4, 0.004),
     NFRMC(8, 6, 0.5, 4, 0),

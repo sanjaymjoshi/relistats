@@ -145,7 +145,7 @@ def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
     )
 
 
-def reliability(n: int, f: int, c: float) -> Optional[float]:
+def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
     """Minimum reliability at confidence level c
 
     :param n: number of samples
@@ -154,10 +154,32 @@ def reliability(n: int, f: int, c: float) -> Optional[float]:
     :type f: int, >=0
     :param c: confidence level
     :type c: float, [0, 1]
+    :param m: remaining samples in population (None for infinite)
+    :type m: int, >= 0, optional
     :return: Reliability or None if it could not be computed
     :rtype: float, optional
     """
-    return reliability_optim(n, f, c)
+    if m is None:
+        # Infinite population case
+        return reliability_optim(n, f, c)
+
+    # Finite population case
+    if m < 0:
+        return None
+    
+    # Calculate confidence for each case of remaining failures
+    # Return the highest reliability
+    total_samples = n+m
+    for f2 in range(m):
+        r = 1 - (f+f2) / total_samples
+        c2 = confidence(n, f, r, m)
+        print(n, f, r, m, c2)
+        if c2 >= c:
+            return  r
+    return 0
+        
+
+        
 
 
 def _assurance_fn(x: float, n: int, f: int) -> float:

@@ -114,10 +114,10 @@ def test_reliability_optim() -> None:
     assert reliability_optim(-2, 0, 0.5) is None
     assert reliability_optim(2, 0, -0.5) is None
 
+# Reliability computation should be accurate, so set the tolerance tight
+ABS_TOL_RELIABILITY = 0.001
 
 def test_reliability() -> None:
-    # Reliability computation should be accurate, so set the tolerance tight
-    ABS_TOL_RELIABILITY = 0.001
     for x in test_nfrmc:
         print(f"Testing reliability: {asdict(x)}")
         c1 = confidence(x.n, x.f, x.r)
@@ -125,6 +125,15 @@ def test_reliability() -> None:
             c1 = 0
         assert reliability(x.n, x.f, c1) == pytest.approx(x.r, abs=ABS_TOL_RELIABILITY)
 
+def test_reliability_finite() -> None:
+    assert reliability(8, 3, 0.97, 4) == 0.5
+    assert reliability(8, 3, 0.86, 8) == 0.5
+    assert reliability(8, 4, 0.36, 4) == 0.5
+    assert reliability(8, 5, 0.003, 4) == 0.5
+
+    assert reliability(8, 4, 0.027, 4) == pytest.approx(
+            0.583, abs=ABS_TOL_RELIABILITY
+        )
 
 def test_assurance() -> None:
     assert assurance(22, 0) == pytest.approx(0.9, abs=0.001)

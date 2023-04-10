@@ -22,6 +22,7 @@ class NFRMC:
 
 
 test_nfrmc = (
+    # infinite population
     NFRMC(1, 0, 0.5, None, 0.5),
     NFRMC(2, 0, 0.5, None, 0.75),
     NFRMC(2, 1, 0.5, None, 0.25),
@@ -31,6 +32,12 @@ test_nfrmc = (
     NFRMC(100, 10, 0.9, None, 0.417),
     NFRMC(1000, 100, 0.9, None, 0.473),
     NFRMC(10000, 1000, 0.9, None, 0.492),
+
+    # finite population
+    NFRMC(8, 3, 0.5, 4, 0.973),
+    NFRMC(8, 4, 0.5, 4, 0.363),
+    NFRMC(8, 5, 0.5, 4, 0.004),
+    NFRMC(8, 6, 0.5, 4, 0),
 )
 
 
@@ -57,6 +64,12 @@ def test_confidence() -> None:
     assert confidence(2, 2, 0.5, -1 ) is None
     assert confidence(10, 0, 0.9, 0 ) == 1
     assert confidence(10, 0, 0.9, 1 ) == 1
+
+    assert confidence(8, 0, 0.5, 1 ) == 1
+    assert confidence(8, 0, 0.5, 2 ) == 1
+    assert confidence(8, 0, 0.5, 4 ) == 1
+    assert confidence(8, 1, 0.5, 4 ) == 1
+    assert confidence(8, 2, 0.5, 4 ) == 1
 
 def test_reliability_closed() -> None:
     # Reliability closed form computation is approximate, so set the tolerance loose

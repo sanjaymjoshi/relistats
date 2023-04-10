@@ -30,16 +30,18 @@ def confidence(n: int, f: int, r: float, m: int=None) -> Optional[float]:
     """
     if n <= 0 or f < 0 or r < 0 or r > 1:
         return None
-    
+    r_needed = r
+
     if m is not None:        
         # Finite population case
         if m < 0:
             return None
         total_samples = n + m
-        max_f_at_r = floor(total_samples * r)
+        max_f_at_r = floor(total_samples * (1-r) )
+
         num_failures = max_f_at_r - f # number of failures we can afford
         num_samples = m # in these many samples
-
+        
         if num_failures < 0:
             # got too many failures already, zero confidence
             return 0
@@ -54,14 +56,12 @@ def confidence(n: int, f: int, r: float, m: int=None) -> Optional[float]:
             # 1 failure
             num_samples = num_samples + 1
             num_failures = 1
-    else:
-        # Infinite population
-        num_failures = f
-        num_samples = n
+
+        r_needed = 1 - num_failures / num_samples
 
     # Scipy's binom object provides 'survival function', which is 1 - CDF.
-    prob_failure = 1 - r
-    return st.binom.sf(num_failures, num_samples, prob_failure)
+    prob_failure = 1 - r_needed
+    return st.binom.sf(f, n, prob_failure)
 
 
 

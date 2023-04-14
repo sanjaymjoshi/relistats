@@ -235,9 +235,7 @@ def assurance(n: int, f: int, tol=0.001, m: int=None) -> Optional[float]:
         r = 1 - (f+f2) / total_samples
         c2 = confidence(n, f, r, m)
         assurance = min([r, c2])
-
-        if assurance < max_assurance:
-            return  max_assurance
-        else:
+        print(r, c2, assurance, max_assurance)
+        if assurance > max_assurance:
             max_assurance = assurance
     return max_assurance

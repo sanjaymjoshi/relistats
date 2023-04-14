@@ -157,7 +157,20 @@ def test_assurance_finite() -> None:
     assert assurance(22, 3, tol=0.001, m=28) == pytest.approx(0.78, abs=0.001)
     assert assurance(22, 4, tol=0.001, m=28) == pytest.approx(0.76, abs=0.001)
     assert assurance(22, 5, tol=0.001, m=28) == pytest.approx(0.72, abs=0.001)
-    
+    assert assurance(22, 6, tol=0.001, m=28) == pytest.approx(0.68, abs=0.001)
+    assert assurance(22, 7, tol=0.001, m=28) == pytest.approx(0.64, abs=0.001)
+    assert assurance(22, 8, tol=0.001, m=28) == pytest.approx(0.60, abs=0.001)
+    assert assurance(22, 9, tol=0.001, m=28) == pytest.approx(0.54, abs=0.001)
+    assert assurance(22, 10, tol=0.001, m=28) == pytest.approx(0.52, abs=0.001)
+
+    assert assurance(22, 2, tol=0.001, m=8) == pytest.approx(0.833, abs=0.001)
+    assert assurance(22, 2, tol=0.001, m=18) == pytest.approx(0.85, abs=0.001)
+    assert assurance(22, 2, tol=0.001, m=38) == pytest.approx(0.816, abs=0.001)
+    assert assurance(22, 2, tol=0.001, m=48) == pytest.approx(0.829, abs=0.001)
+
+
+
+
     
     
         

@@ -168,12 +168,17 @@ def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
         return None
     
     # Calculate confidence for each case of remaining failures
-    # Return the highest reliability
+    # Start with 0 failures, i.e., highest reliability possible.
+    # The confidence will be lowest at this level. If the 
+    # desired confidence is higher than this, keep increasing
+    # failures, i.e., keep reducing reliability until the 
+    # desired confidence level is met or exceeded.
+    # Return that reliability (or 0 if it is not possible to
+    # achieve the desired level of confidence)
     total_samples = n+m
     for f2 in range(m):
         r = 1 - (f+f2) / total_samples
         c2 = confidence(n, f, r, m)
-        print(n, f, r, m, c2)
         if c2 >= c:
             return  r
     return 0

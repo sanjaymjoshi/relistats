@@ -184,16 +184,13 @@ def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
     return 0
         
 
-        
-
-
 def _assurance_fn(x: float, n: int, f: int) -> float:
     """Function to find roots of x = confidence(n, f, x)"""
     c = confidence(n, f, x) or 0
     return x - c
 
 
-def assurance(n: int, f: int, tol=0.001) -> Optional[float]:
+def assurance(n: int, f: int, tol=0.001, m: int=None) -> Optional[float]:
     """Assurance [0, 1], i.e., confidence = reliability. For example,
     90% assurance means 90% confidence in 90% reliability (at n=22, f=0).
     This method uses numerical approach of Brent's method to compute
@@ -210,12 +207,37 @@ def assurance(n: int, f: int, tol=0.001) -> Optional[float]:
     """
     if n <= 0 or f < 0:
         return None
-    # Use brentq method to find real root of the assurance equation
-    # a = c = r. Meaning a = confidence(n, f, a)
-    return opt.brentq(
-        _assurance_fn,
-        a=0,  # Lowest possible value
-        b=1,  # Highest possible value
-        args=(n, f),
-        xtol=tol,
-    )
+    
+    if m is None:
+        # Infinite samples case 
+        # Use brentq method to find real root of the assurance equation
+        # a = c = r. Meaning a = confidence(n, f, a)
+        return opt.brentq(
+            _assurance_fn,
+            a=0,  # Lowest possible value
+            b=1,  # Highest possible value
+            args=(n, f),
+            xtol=tol,
+        )
+    
+    # Calculate confidence for each case of remaining failures
+    # Start with 0 failures, i.e., highest reliability possible.
+    # The confidence will be lowest at this level. Set assurance
+    # as the minimum of reliability and confidence. Keep increasing
+    # failures, i.e., keep reducing reliability which will increase
+    # the confidence. Keep doing this while the assurance keeps
+    # increasing.
+    # Return that assurance
+    
+    max_assurance = 0
+    total_samples = n+m
+    for f2 in range(m):
+        r = 1 - (f+f2) / total_samples
+        c2 = confidence(n, f, r, m)
+        assurance = min([r, c2])
+
+        if assurance < max_assurance:
+            return  max_assurance
+        else:
+            max_assurance = assurance
+    return max_assurance

@@ -144,3 +144,22 @@ def test_assurance() -> None:
 
     assert assurance(2, -2) is None
     assert assurance(-2, 0) is None
+
+def test_assurance_finite() -> None:
+    assert assurance(3, 0, tol=0.001, m=3) == pytest.approx(0.667, abs=0.001)
+    assert assurance(3, 0, tol=0.001, m=5) == pytest.approx(0.75, abs=0.001)
+    assert assurance(8, 0, tol=0.001, m=14) == pytest.approx(0.855, abs=0.001)
+    assert assurance(22, 0, tol=0.001, m=28) == pytest.approx(0.917, abs=0.001)
+    assert assurance(60, 0, tol=0.001, m=100) == pytest.approx(0.956, abs=0.001)
+
+    assert assurance(22, 1, tol=0.001, m=28) == pytest.approx(0.88, abs=0.001)
+    assert assurance(22, 2, tol=0.001, m=28) == pytest.approx(0.84, abs=0.001)
+    assert assurance(22, 3, tol=0.001, m=28) == pytest.approx(0.78, abs=0.001)
+    assert assurance(22, 4, tol=0.001, m=28) == pytest.approx(0.76, abs=0.001)
+    assert assurance(22, 5, tol=0.001, m=28) == pytest.approx(0.72, abs=0.001)
+    
+    
+    
+        
+
+ 

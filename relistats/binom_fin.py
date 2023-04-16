@@ -67,50 +67,6 @@ def conf_fin(n: int, f: int, r: float, m: int) -> tuple:
     return (confidence(n, f, r_needed), actual_r)
 
 
-
-def _wilson_center(p, n, c):
-    """Center of Wilson score interval. See reference below."""
-    z = st.norm.ppf(c)
-    return (p + z * z / (2 * n)) / (1 + z * z / n)
-
-
-def _wilson_lower(p, n, c):
-    """Lower bound of Wilson score interval. See reference below."""
-    z = st.norm.ppf(c)
-    p50 = _wilson_center(p, n, c)
-    part2 = z / (1 + z * z / n) * sqrt(p * (1 - p) / n + z * z / (4 * n * n))
-    return p50 - part2
-
-
-def _wilson_lower_corrected(p, n, c):
-    """Lower bound of Wilson score interval, with continuity correction."""
-    return _wilson_lower(max(p - 1 / (2 * n), 0), n, c)
-
-
-def reliability_closed(n: int, f: int, c: float) -> Optional[float]:
-    """Approximate minimum reliability [0, 1] at confidence level c.
-    The approximation is within about 5% of actual reliability and uses
-    closed-form expression for computation called 'Wilson Score Interval
-    with Continuity Correction' [Wallis, Sean A. (2013). "Binomial
-    confidence intervals and contingency tests: mathematical fundamentals
-    and the evaluation of alternative methods". Journal of Quantitative
-    Linguistics. 20 (3): 178–208].
-
-    :param n: number of samples
-    :type n: int, >=0
-    :param f: number of failures
-    :type f: int, >=0
-    :param c: confidence level
-    :type c: float, [0, 1]
-    :return: Reliability or None if it could not be computed
-    :rtype: float, optional
-    """
-    if n <= 0 or f < 0 or c < 0 or c > 1:
-        return None
-
-    return _wilson_lower_corrected((n - f) / n, n, c)
-
-
 def _reliability_fn(x: float, n: int, f: int, c: float) -> float:
     """Function to find roots of c = confidence(n, f, x)"""
     c_hat = confidence(n, f, x) or 0

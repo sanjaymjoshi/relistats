@@ -176,7 +176,7 @@ def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
     # Return that reliability (or 0 if it is not possible to
     # achieve the desired level of confidence)
     total_samples = n+m
-    for f2 in range(m):
+    for f2 in range(m+1):
         r = 1 - (f+f2) / total_samples
         c2 = confidence(n, f, r, m)
         if c2 >= c:
@@ -231,7 +231,7 @@ def assurance(n: int, f: int, tol=0.001, m: int=None) -> Optional[float]:
     
     max_assurance = 0
     total_samples = n+m
-    for f2 in range(m):
+    for f2 in range(m+1):
         r = 1 - (f+f2) / total_samples
         c2 = confidence(n, f, r, m)
         assurance = min([r, c2])

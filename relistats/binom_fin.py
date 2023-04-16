@@ -17,8 +17,8 @@ from relistats.binomial import confidence
 
 
 def conf_fin(n: int, f: int, r: float, m: int) -> tuple:
-    """Confidence [0, 1] in reliability r using closed-form expression.
-    Returns tuple with actual reliability used for computations
+    """Confidence [0, 1] in reliability r for finite population size.
+    Returns tuple with second value as actual reliability used for computations.
 
     :param n: number of samples
     :type n: int, >=0
@@ -104,8 +104,9 @@ def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
     )
 
 
-def reliability(n: int, f: int, c: float, m: int=None) -> tuple:
-    """Minimum reliability at confidence level c
+def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
+    """Minimum reliability at confidence level c for finite population size.
+    Returns tuple with second value as actual confidence used for computations.
 
     :param n: number of samples
     :type n: int, >=0
@@ -113,18 +114,12 @@ def reliability(n: int, f: int, c: float, m: int=None) -> tuple:
     :type f: int, >=0
     :param c: confidence level
     :type c: float, [0, 1]
-    :param m: remaining samples in population (None for infinite)
-    :type m: int, >= 0, optional
-    :return: Reliability or None if it could not be computed
+    :param m: remaining samples in population
+    :type m: int, >= 0
+    :return: (reliability, actual confidence)
     """
-    #:rtype: float, optional
-    if m is None:
-        # Infinite population case
-        return (reliability_optim(n, f, c), c)
-
-    # Finite population case
-    if m < 0:
-        return None
+    if n <= 0 or f < 0 or c < 0 or c > 1:
+        return (None, c)
     
     # Calculate confidence for each case of remaining failures
     # Start with 0 failures, i.e., highest reliability possible.
@@ -137,10 +132,10 @@ def reliability(n: int, f: int, c: float, m: int=None) -> tuple:
     total_samples = n+m
     for f2 in range(m+1):
         r = 1 - (f+f2) / total_samples
-        c2, r2 = confidence(n, f, r, m)
+        c2, r2 = conf_fin(n, f, r, m)
         if c2 >= c:
             return (r2, c2)
-    return 0, c
+    return (0, c)
         
 
 def _assurance_fn(x: float, n: int, f: int) -> float:

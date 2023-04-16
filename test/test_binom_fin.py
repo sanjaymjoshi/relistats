@@ -5,7 +5,7 @@ import pytest
 from relistats.binom_fin import (
     #assurance,
     conf_fin,
-    #reliability,
+    reli_fin,
 )
 
 
@@ -56,46 +56,8 @@ def test_conf_fin() -> None:
     assert conf_fin(2, 0, -0.5, 2) == (None, -0.5)
 
 
-# def test_reliability_closed() -> None:
-#     # Reliability closed form computation is approximate, so set the tolerance loose
-#     ABS_TOL_RELIABILITY_CLOSED = 0.03
 
-#     for x in test_nfrc:
-#         print(f"Testing reliability: {asdict(x)}")
-#         c1 = confidence(x.n, x.f, x.r)
-#         if c1 is None:
-#             c1 = 0
-#         assert reliability_closed(x.n, x.f, c1) == pytest.approx(
-#             x.r, abs=ABS_TOL_RELIABILITY_CLOSED
-#         )
-
-#     assert reliability_closed(2, 0, 2) is None
-#     assert reliability_closed(2, -2, 0.5) is None
-#     assert reliability_closed(-2, 0, 0.5) is None
-#     assert reliability_closed(2, 0, -0.5) is None
-
-
-# def test_reliability_optim() -> None:
-#     # Reliability computation via optimization is more accurate, so set the tolerance tight
-#     ABS_TOL_RELIABILITY_OPTIM = 0.001
-#     for x in test_nfrc:
-#         print(f"Testing reliability: {asdict(x)}")
-#         c1 = confidence(x.n, x.f, x.r)
-#         if c1 is None:
-#             c1 = 0
-#         assert reliability_optim(x.n, x.f, c1) == pytest.approx(
-#             x.r, abs=ABS_TOL_RELIABILITY_OPTIM
-#         )
-
-#     assert reliability_optim(20, 0, 0.9, 0.0001) == pytest.approx(0.8912, abs=0.0001)
-
-#     assert reliability_optim(2, 0, 2) is None
-#     assert reliability_optim(2, -2, 0.5) is None
-#     assert reliability_optim(-2, 0, 0.5) is None
-#     assert reliability_optim(2, 0, -0.5) is None
-
-
-# def test_reliability() -> None:
+def test_reli_fin() -> None:
 #     # Reliability computation should be accurate, so set the tolerance tight
 #     ABS_TOL_RELIABILITY = 0.001
 #     for x in test_nfrc:
@@ -104,7 +66,22 @@ def test_conf_fin() -> None:
 #         if c1 is None:
 #             c1 = 0
 #         assert reliability(x.n, x.f, c1) == pytest.approx(x.r, abs=ABS_TOL_RELIABILITY)
+    assert reli_fin(4, 0, 0.5, 0) == (1, 1)
+    assert reli_fin(4, 1, 0.5, 0) == (0.75, 1)
+    assert reli_fin(4, 2, 0.5, 0) == (0.5, 1)
+    assert reli_fin(4, 3, 0.5, 0) == (0.25, 1)
+    assert reli_fin(4, 4, 0.5, 0) == (0, 1)
 
+    # assert reli_fin(4, 0, 0.5, 4) == (1, 0.5)
+    # assert reli_fin(4, 1, 0.5, 4) == pytest.approx((0.949, 0.5), abs=ABS_TOL_CONFIDENCE)
+    # assert reli_fin(4, 2, 0.5, 4) == pytest.approx((0.313, 0.5), abs=ABS_TOL_CONFIDENCE)
+    # assert reli_fin(4, 3, 0.5, 4) == pytest.approx((0.004, 0.5), abs=ABS_TOL_CONFIDENCE)
+    # assert reli_fin(4, 4, 0.5, 4) == pytest.approx((0.000, 0.556), abs=ABS_TOL_CONFIDENCE)
+
+    assert reli_fin(2, 0, 2, 2) == (None, 2)
+    assert reli_fin(2, -2, 0.5, 2) == (None, 0.5)
+    assert reli_fin(-2, 0, 0.5, 2) == (None, 0.5)
+    assert reli_fin(2, 0, -0.5, 2) == (None, -0.5)
 
 # def test_assurance() -> None:
 #     assert assurance(22, 0) == pytest.approx(0.9, abs=0.001)

@@ -61,8 +61,7 @@ def conf_fin(n: int, f: int, r: float, m: int) -> tuple:
         num_failures = 1
         total_samples += 1
 
-    #print(max_f_at_r, num_failures)
-    actual_r = 1 - num_failures / total_samples
+    actual_r = 1 - max_f_at_r / total_samples
     r_needed = 1 - num_failures / num_samples
 
     return (confidence(n, f, r_needed), actual_r)

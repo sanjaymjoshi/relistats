@@ -38,10 +38,17 @@ def test_conf_fin() -> None:
 #        print(f"Testing confidence: {asdict(x)}")
 #        assert confidence(x.n, x.f, x.r) == pytest.approx(x.c, abs=ABS_TOL_CONFIDENCE)
 
-    # assert conf_fin(2, 2, 0.5, 2) == (0, 0.)
-    # assert conf_fin(2, 3, 0.5) == (0, 0.5)
-    # assert conf_fin(20, 0, 0) == (0, 0)
-    # assert conf_fin(20, 0, 1) == (0, 1)
+    assert conf_fin(4, 0, 0.5, 0) == (1, 0.5)
+    assert conf_fin(4, 1, 0.5, 0) == (1, 0.5)
+    assert conf_fin(4, 2, 0.5, 0) == (1, 0.5)
+    assert conf_fin(4, 3, 0.5, 0) == (0, 0.5)
+    assert conf_fin(4, 4, 0.5, 0) == (0, 0.5)
+
+    assert conf_fin(4, 0, 0.5, 4) == (1, 0.5)
+    assert conf_fin(4, 1, 0.5, 4) == pytest.approx((0.949, 0.5), abs=ABS_TOL_CONFIDENCE)
+    assert conf_fin(4, 2, 0.5, 4) == pytest.approx((0.313, 0.5), abs=ABS_TOL_CONFIDENCE)
+    assert conf_fin(4, 3, 0.5, 4) == pytest.approx((0.004, 0.5), abs=ABS_TOL_CONFIDENCE)
+    assert conf_fin(4, 4, 0.5, 4) == pytest.approx((0.000, 0.556), abs=ABS_TOL_CONFIDENCE)
 
     assert conf_fin(2, 0, 2, 2) == (None, 2)
     assert conf_fin(2, -2, 0.5, 2) == (None, 0.5)

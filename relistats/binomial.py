@@ -14,7 +14,7 @@ import scipy.optimize as opt
 import scipy.stats as st
 
 
-def confidence(n: int, f: int, r: float, m: int=None) -> Optional[float]:
+def confidence(n: int, f: int, r: float, m: int=None) -> tuple:
     """Confidence [0, 1] in reliability r using closed-form expression.
 
     :param n: number of samples
@@ -31,24 +31,26 @@ def confidence(n: int, f: int, r: float, m: int=None) -> Optional[float]:
     if n <= 0 or f < 0 or r < 0 or r > 1:
         return None
     r_needed = r
+    actual_r = r
 
     if m is not None:        
         # Finite population case
         if m < 0:
-            return None
+            return None, actual_r
         total_samples = n + m
         max_f_at_r = floor(total_samples * (1-r) )
+        actual_r = 1 - max_f_at_r/total_samples
 
         num_failures = max_f_at_r - f # number of failures we can afford
         num_samples = m # in these many samples
-        
+
         if num_failures < 0:
             # got too many failures already, zero confidence
-            return 0
+            return 0, actual_r
         
         if num_failures >= m:
             # even if all remaining samples fail, we are still ok. Full confidence.
-            return 1
+            return 1, actual_r
         
         if num_failures == 0:
             # Cannot calculate probability of zero failures, hence bump up the 
@@ -56,12 +58,16 @@ def confidence(n: int, f: int, r: float, m: int=None) -> Optional[float]:
             # 1 failure
             num_samples = num_samples + 1
             num_failures = 1
+            total_samples += 1
 
+        #print(max_f_at_r, num_failures)
+        actual_r = 1 - num_failures / total_samples
         r_needed = 1 - num_failures / num_samples
 
     # Scipy's binom object provides 'survival function', which is 1 - CDF.
+    
     prob_failure = 1 - r_needed
-    return st.binom.sf(f, n, prob_failure)
+    return (st.binom.sf(f, n, prob_failure), actual_r)
 
 
 
@@ -145,7 +151,7 @@ def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
     )
 
 
-def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
+def reliability(n: int, f: int, c: float, m: int=None) -> tuple:
     """Minimum reliability at confidence level c
 
     :param n: number of samples
@@ -157,11 +163,11 @@ def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
     :param m: remaining samples in population (None for infinite)
     :type m: int, >= 0, optional
     :return: Reliability or None if it could not be computed
-    :rtype: float, optional
     """
+    #:rtype: float, optional
     if m is None:
         # Infinite population case
-        return reliability_optim(n, f, c)
+        return (reliability_optim(n, f, c), c)
 
     # Finite population case
     if m < 0:
@@ -178,10 +184,10 @@ def reliability(n: int, f: int, c: float, m: int=None) -> Optional[float]:
     total_samples = n+m
     for f2 in range(m+1):
         r = 1 - (f+f2) / total_samples
-        c2 = confidence(n, f, r, m)
+        c2, r2 = confidence(n, f, r, m)
         if c2 >= c:
-            return  r
-    return 0
+            return (r2, c2)
+    return 0, c
         
 
 def _assurance_fn(x: float, n: int, f: int) -> float:

@@ -7,12 +7,7 @@ S.M. Joshi, "Computation of Reliability Statistics for
 Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
 https://doi.org/10.48550/arXiv.2303.03167
 """
-from math import sqrt, floor
-from typing import Optional
-
-import scipy.optimize as opt
-import scipy.stats as st
-
+from math import floor
 from relistats.binomial import confidence
 
 
@@ -101,41 +96,24 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
     return (0, c)
         
 
-def _assurance_fn(x: float, n: int, f: int) -> float:
-    """Function to find roots of x = confidence(n, f, x)"""
-    c = confidence(n, f, x) or 0
-    return x - c
-
-
-def assurance(n: int, f: int, tol=0.001, m: int=None) -> Optional[float]:
-    """Assurance [0, 1], i.e., confidence = reliability. For example,
-    90% assurance means 90% confidence in 90% reliability (at n=22, f=0).
-    This method uses numerical approach of Brent's method to compute
-    the solution within the specified tolerance.
+def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
+    """Assurance [0, 1], i.e., confidence = reliability.
+    Returns tuple with other values as reliability and confidence
+    used for computations.
 
     :param n: number of samples
     :type n: int, >=0
     :param f: number of failures
     :type f: int, >=0
     :param tol: accuracy tolerance
+    :param m: remaining samples in population
+    :type m: int, >= 0
     :type tol: float, optional
-    :return: Assurance or None if it could not be computed
-    :rtype: float, optional
+    :return: (Assurance, reliability, confidence)
+    :rtype: tuple
     """
     if n <= 0 or f < 0:
-        return None
-    
-    if m is None:
-        # Infinite samples case 
-        # Use brentq method to find real root of the assurance equation
-        # a = c = r. Meaning a = confidence(n, f, a)
-        return opt.brentq(
-            _assurance_fn,
-            a=0,  # Lowest possible value
-            b=1,  # Highest possible value
-            args=(n, f),
-            xtol=tol,
-        )
+        return (None, 0, 0)
     
     # Calculate confidence for each case of remaining failures
     # Start with 0 failures, i.e., highest reliability possible.
@@ -147,12 +125,15 @@ def assurance(n: int, f: int, tol=0.001, m: int=None) -> Optional[float]:
     # Return that assurance
     
     max_assurance = 0
+    max_reli = 0
+    max_conf = 0
     total_samples = n+m
     for f2 in range(m+1):
         r = 1 - (f+f2) / total_samples
-        c2 = confidence(n, f, r, m)
-        assurance = min([r, c2])
-        print(r, c2, assurance, max_assurance)
+        c2, r2 = conf_fin(n, f, r, m)
+        assurance = min([r2, c2])
         if assurance > max_assurance:
             max_assurance = assurance
-    return max_assurance
+            max_reli = r2
+            max_conf = c2
+    return (max_assurance, max_reli, max_conf)

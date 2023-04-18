@@ -6,6 +6,7 @@ from relistats.binom_fin import (
     #assurance,
     conf_fin,
     reli_fin,
+    assur_fin
 )
 
 
@@ -83,12 +84,17 @@ def test_reli_fin() -> None:
     assert reli_fin(-2, 0, 0.5, 2) == (None, 0.5)
     assert reli_fin(2, 0, -0.5, 2) == (None, -0.5)
 
-# def test_assurance() -> None:
-#     assert assurance(22, 0) == pytest.approx(0.9, abs=0.001)
-#     assert assurance(59, 0) == pytest.approx(0.95, abs=0.001)
-#     assert assurance(22, 2) == pytest.approx(0.812, abs=0.001)
-#     assert assurance(59, 6) == pytest.approx(0.842, abs=0.001)
-#     assert assurance(59, 10, 0.0001) == pytest.approx(0.7798, abs=0.0001)
+def test_assurance() -> None:
+    assert assur_fin(4, 1, 0) == pytest.approx((0.75, 0.75, 1), abs=0.001)
+    assert assur_fin(4, 2, 0) == pytest.approx((0.5, 0.5, 1), abs=0.001)
+    assert assur_fin(4, 3, 0) == pytest.approx((0.25, 0.25, 1), abs=0.001)
+    assert assur_fin(4, 0, 4) == pytest.approx((0.75, 0.75, 0.938), abs=0.001)
+    assert assur_fin(4, 1, 4) == pytest.approx((0.625, 0.625, 0.688), abs=0.001)
+    assert assur_fin(4, 1, 8) == pytest.approx((0.583, 0.583, 0.688), abs=0.001)
 
-#     assert assurance(2, -2) is None
-#     assert assurance(-2, 0) is None
+
+
+
+
+
+

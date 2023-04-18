@@ -67,43 +67,6 @@ def conf_fin(n: int, f: int, r: float, m: int) -> tuple:
     return (confidence(n, f, r_needed), actual_r)
 
 
-def _reliability_fn(x: float, n: int, f: int, c: float) -> float:
-    """Function to find roots of c = confidence(n, f, x)"""
-    c_hat = confidence(n, f, x) or 0
-    return c_hat - c
-
-
-def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
-    """Minimum reliability [0, 1] at confidence level c using numerical
-    optimization (Brent's method). The approximation is within specified
-    tolerance limit.
-
-    :param n: number of samples
-    :type n: int, >=0
-    :param f: number of failures
-    :type f: int, >=0
-    :param c: confidence level
-    :type c: float, [0, 1]
-    :param tol: accuracy tolerance
-    :type tol: float, optional
-
-    :return: Reliability or None if it could not be computed
-    :rtype: float, optional
-    """
-    if n <= 0 or f < 0 or c < 0 or c > 1:
-        return None
-
-    # Use numerical optimization to find real root of the confidence equation
-    # c - confidence(n, f, r)
-    return opt.brentq(
-        _reliability_fn,
-        a=0,  # Lowest possible value
-        b=1,  # Highest possible value
-        args=(n, f, c),
-        xtol=tol,
-    )
-
-
 def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
     """Minimum reliability at confidence level c for finite population size.
     Returns tuple with second value as actual confidence used for computations.

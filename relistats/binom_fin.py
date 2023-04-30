@@ -57,9 +57,8 @@ def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
         
     r_needed = 1 - d / m
 
-    print(f"n = {n}, f = {f}, m = {m}, d = {d}")
     actual_c = confidence(n, f, r_needed)
-    print(f"Confidence at r={r_needed} = {actual_c}, with actual_r={actual_r}")
+    logger.debug(f"Confidence at r={r_needed} = {actual_c}, with actual_r={actual_r}")
 
     return (actual_c, actual_r)
 

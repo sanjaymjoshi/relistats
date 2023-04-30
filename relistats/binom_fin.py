@@ -23,7 +23,7 @@ def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
     :type f: int, >=0
     :param m: remaining samples in population
     :type m: int, >= 0
-    :param d: maximum number of defects in total, m+n, samples
+    :param d: maximum number of defects in remaining m samples
     :type d: int, >=0
     :return: Tuple of (confidence, actual reliability)
     :rtype: tuple
@@ -78,7 +78,7 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
     :return: (reliability, actual confidence)
     """
     if n <= 0 or f < 0 or c < 0 or c > 1:
-        return (None, c)
+        return (None, None)
     
     # Calculate confidence for each case of remaining failures
     # Start with 0 failures, i.e., highest reliability possible.
@@ -88,13 +88,12 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
     # desired confidence level is met or exceeded.
     # Return that reliability (or 0 if it is not possible to
     # achieve the desired level of confidence)
-    total_samples = n+m
-    for f2 in range(m+1):
-        r = 1 - (f+f2) / total_samples
-        c2, r2 = conf_fin(n, f, r, m)
+
+    for d in range(m+1):
+        c2, r2 = conf_fin(n, f, m, d)
         if c2 >= c:
             return (r2, c2)
-    return (0, c)
+    #return (0, c)... never reached!
         
 
 def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
@@ -129,9 +128,8 @@ def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     max_reli = 0
     max_conf = 0
     total_samples = n+m
-    for f2 in range(m+1):
-        r = 1 - (f+f2) / total_samples
-        c2, r2 = conf_fin(n, f, r, m)
+    for d in range(m+1):
+        c2, r2 = conf_fin(n, f, m,d)
         assurance = min([r2, c2])
         if assurance > max_assurance:
             max_assurance = assurance

@@ -8,58 +8,60 @@ Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
 https://doi.org/10.48550/arXiv.2303.03167
 """
 from math import floor
+from relistats import logger
 from relistats.binomial import confidence
 
 
-def conf_fin(n: int, f: int, r: float, m: int) -> tuple:
+
+def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
     """Confidence [0, 1] in reliability r for finite population size.
     Returns tuple with second value as actual reliability used for computations.
 
-    :param n: number of samples
+    :param n: number of samples tested
     :type n: int, >=0
-    :param f: number of failures
+    :param f: number of failures in n samples
     :type f: int, >=0
-    :param r: reliability level
-    :type r: float, [0, 1]
     :param m: remaining samples in population
     :type m: int, >= 0
+    :param d: maximum number of defects in total, m+n, samples
+    :type d: int, >=0
     :return: Tuple of (confidence, actual reliability)
     :rtype: tuple
     """
-    if n <= 0 or f < 0 or r < 0 or r > 1:
-        return (None, r)
+    if n <= 0 or f < 0 or m < 0 or d < 0:
+        return (None, None)
 
-    # Finite population case
-    if m < 0:
-        return (None, r)
-    
+    if m == 0:
+        # No more samples remaining. We have full confidence in current level of reliability
+        return (1, 1 - f/n)
+
     total_samples = n + m
-    max_f_at_r = floor(total_samples * (1-r) )
-    actual_r = 1 - max_f_at_r/total_samples
-
-    num_failures = max_f_at_r - f # number of failures we can afford
-    num_samples = m # in these many samples
-
-    if num_failures < 0:
-        # got too many failures already, zero confidence
-        return (0, actual_r)
+    total_failures = f + d
+    if total_failures > total_samples:
+        return (None, None)
     
-    if num_failures >= m:
+    actual_r = 1 - total_failures/total_samples
+    if d >= m:
         # even if all remaining samples fail, we are still ok. Full confidence.
         return (1, actual_r)
     
-    if num_failures == 0:
+    if d == 0:
         # Cannot calculate probability of zero failures, hence bump up the 
         # remaining samples by 1 and calculate probability that there is exactly
         # 1 failure
-        num_samples = num_samples + 1
-        num_failures = 1
+        d += 1
+        m += 1
         total_samples += 1
-        actual_r = 1 - max_f_at_r / total_samples
+        total_failures += 1
+        actual_r = 1 - total_failures / total_samples
         
-    r_needed = 1 - num_failures / num_samples
+    r_needed = 1 - d / m
 
-    return (confidence(n, f, r_needed), actual_r)
+    print(f"n = {n}, f = {f}, m = {m}, d = {d}")
+    actual_c = confidence(n, f, r_needed)
+    print(f"Confidence at r={r_needed} = {actual_c}, with actual_r={actual_r}")
+
+    return (actual_c, actual_r)
 
 
 def reli_fin(n: int, f: int, c: float, m: int) -> tuple:

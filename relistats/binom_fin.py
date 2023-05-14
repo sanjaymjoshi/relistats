@@ -8,9 +8,9 @@ Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
 https://doi.org/10.48550/arXiv.2303.03167
 """
 from math import floor
+
 from relistats import logger
 from relistats.binomial import confidence
-
 
 
 def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
@@ -33,20 +33,20 @@ def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
 
     if m == 0:
         # No more samples remaining. We have full confidence in current level of reliability
-        return (1, 1 - f/n)
+        return (1, 1 - f / n)
 
     total_samples = n + m
     total_failures = f + d
     if total_failures > total_samples:
         return (None, None)
-    
-    actual_r = 1 - total_failures/total_samples
+
+    actual_r = 1 - total_failures / total_samples
     if d >= m:
         # even if all remaining samples fail, we are still ok. Full confidence.
         return (1, actual_r)
-    
+
     if d == 0:
-        # Cannot calculate probability of zero failures, hence bump up the 
+        # Cannot calculate probability of zero failures, hence bump up the
         # remaining samples by 1 and calculate probability that there is exactly
         # 1 failure
         d += 1
@@ -54,7 +54,7 @@ def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
         total_samples += 1
         total_failures += 1
         actual_r = 1 - total_failures / total_samples
-        
+
     r_needed = 1 - d / m
 
     actual_c = confidence(n, f, r_needed)
@@ -79,22 +79,22 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
     """
     if n <= 0 or f < 0 or c < 0 or c > 1:
         return (None, None)
-    
+
     # Calculate confidence for each case of remaining failures
     # Start with 0 failures, i.e., highest reliability possible.
-    # The confidence will be lowest at this level. If the 
+    # The confidence will be lowest at this level. If the
     # desired confidence is higher than this, keep increasing
-    # failures, i.e., keep reducing reliability until the 
+    # failures, i.e., keep reducing reliability until the
     # desired confidence level is met or exceeded.
     # Return that reliability (or 0 if it is not possible to
     # achieve the desired level of confidence)
 
-    for d in range(m+1):
+    for d in range(m + 1):
         c2, r2 = conf_fin(n, f, m, d)
         if c2 >= c:
             return (r2, c2)
-    #return (0, c)... never reached!
-        
+    # return (0, c)... never reached!
+
 
 def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     """Assurance [0, 1], i.e., confidence = reliability.
@@ -114,7 +114,7 @@ def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     """
     if n <= 0 or f < 0:
         return (None, 0, 0)
-    
+
     # Calculate confidence for each case of remaining failures
     # Start with 0 failures, i.e., highest reliability possible.
     # The confidence will be lowest at this level. Set assurance
@@ -123,13 +123,13 @@ def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     # the confidence. Keep doing this while the assurance keeps
     # increasing.
     # Return that assurance
-    
+
     max_assurance = 0
     max_reli = 0
     max_conf = 0
-    total_samples = n+m
-    for d in range(m+1):
-        c2, r2 = conf_fin(n, f, m,d)
+    total_samples = n + m
+    for d in range(m + 1):
+        c2, r2 = conf_fin(n, f, m, d)
         assurance = min([r2, c2])
         if assurance > max_assurance:
             max_assurance = assurance

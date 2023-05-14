@@ -7,8 +7,6 @@ S.M. Joshi, "Computation of Reliability Statistics for
 Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
 https://doi.org/10.48550/arXiv.2303.03167
 """
-from math import floor
-
 from relistats import logger
 from relistats.binomial import confidence
 
@@ -93,7 +91,7 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
         c2, r2 = conf_fin(n, f, m, d)
         if c2 >= c:
             return (r2, c2)
-    # return (0, c)... never reached!
+    return (0, c)  # never reached!
 
 
 def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
@@ -127,7 +125,6 @@ def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     max_assurance = 0
     max_reli = 0
     max_conf = 0
-    total_samples = n + m
     for d in range(m + 1):
         c2, r2 = conf_fin(n, f, m, d)
         assurance = min([r2, c2])

@@ -3,16 +3,14 @@ name = "pypi"
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
-[requires]
-python_version = "3.9"
-
 [packages]
 relistats = {editable = true, path = "."}
 
 [dev-packages]
-black = "==22.3.0"
+black = "*"
 flake8 = "*"
 isort = "*"
+typing_extensions = "*"
 mypy = "*"
 pre-commit = "*"
 pytest = "*"

@@ -33,7 +33,6 @@ test_nfrc = (
 
 
 def test_confidence() -> None:
-
     # Confidence computation is exact, so set the tolerance tight
     ABS_TOL_CONFIDENCE = 0.001
     for x in test_nfrc:

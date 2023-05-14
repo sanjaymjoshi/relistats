@@ -73,10 +73,10 @@ def test_reli_fin() -> None:
         (0.25, 0.316), abs=ABS_TOL_RELIABILITY
     )
 
-    assert reli_fin(2, 0, 2, 2) == (None, 2)
-    assert reli_fin(2, -2, 0.5, 2) == (None, 0.5)
-    assert reli_fin(-2, 0, 0.5, 2) == (None, 0.5)
-    assert reli_fin(2, 0, -0.5, 2) == (None, -0.5)
+    assert reli_fin(2, 0, 2, 2) == (None, None)
+    assert reli_fin(2, -2, 0.5, 2) == (None, None)
+    assert reli_fin(-2, 0, 0.5, 2) == (None, None)
+    assert reli_fin(2, 0, -0.5, 2) == (None, None)
 
 
 def test_assurance() -> None:

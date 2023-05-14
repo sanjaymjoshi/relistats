@@ -10,6 +10,7 @@ relistats = {editable = true, path = "."}
 black = "*"
 flake8 = "*"
 isort = "*"
+typing_extensions = "*"
 mypy = "*"
 pre-commit = "*"
 pytest = "*"

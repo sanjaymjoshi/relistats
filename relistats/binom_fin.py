@@ -91,7 +91,8 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
         c2, r2 = conf_fin(n, f, m, d)
         if c2 >= c:
             return (r2, c2)
-    return (0, c)  # never reached!
+    return (0, c)  # pragma: no cover
+    # This line is never reached in pytest!
 
 
 def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:

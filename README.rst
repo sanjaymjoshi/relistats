@@ -44,13 +44,15 @@ References
   `arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_, March 2023.
 * S.M. Joshi, "Computation of Reliability Statistics for Finite Samples of Success-Failure Experiments,"
   `arXiv:TBD [stat.ME] <https://doi.org/10.48550/TBD>`_, May 2023.
-* Jupyter notebooks showing how to use this library:
+* Jupyter notebooks showing how to use this library
   `relistats_notebook <https://github.com/sanjaymjoshi/relistats_notebook>`_
 * Interactive online versions of the Jupyter notebook on Google Colab.
+
   * `Infinite population <https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial.ipynb>`_.
   * `Finite population <https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial_finite.ipynb>`_.
 
 Additional documentation.
+
 * `Usage <docs/source/usage.rst>`_ for installation and how to use.
 * `Background <docs/source/background.rst>`_ for concepts and mathematical background.
 

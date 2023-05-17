@@ -1,14 +1,14 @@
 Background
 ==========
 
-Computation of the concepts described in `README <README.rst>`_ depend on
+Computation of the concepts described in `README <../../../README.rst>`_ depend on
 the properties of underlying random variables.
 
-- For samples with binary results, such as pass/fail or success/failure, we
-  typically assume *binomial distribution*.
+For samples with binary results, such as pass/fail or success/failure, we
+typically assume *binomial distribution*.
 
-Binomial Distribution
-----------------------
+Infinite population size
+------------------------
 
 If in :math:`n` samples, we find :math:`f` failures, then the confidence in
 reliability :math:`r, 0 \le r \le 1` is
@@ -35,6 +35,17 @@ Solving the above equation for :math:`a` is not trivial. This library
 offers a numerical method :meth:`relistats.binomial.assurance` that allows
 tuning desired accuracy level.
 
-See paper `Computation of Reliability Statistics for Success-Failure Experiments
-<https://doi.org/10.48550/arXiv.2303.03167>`_ for more information.
+Finite population size
+----------------------
+
+For finite population size, after :math:`n`` samples are tested, we already know
+how many additional samples, :math:`m` remain. The acceptable number of failures
+in these to reach desired reliability level and the associated confidence level
+can be computed assuming infinite population size. This technique is implemented
+in :meth:`relistats.binom_fin.conf_fin`.
+
+Using the confidence method, reliability and assurance levels can be computed as
+shown in :mod:`relistats.binom_fin`.
+
+See references in `README <../../../README.rst>`_ for more information.
 

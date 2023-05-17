@@ -5,10 +5,13 @@
         "Colab",
         "Cookiecutter",
         "Joshi",
+        "optim",
+        "reli",
         "relistats",
         "rtype",
         "scipy",
         "sourcery",
-        "venv"
+        "venv",
+        "xtol"
     ]
 }

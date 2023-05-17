@@ -14,6 +14,14 @@ relistats.binomial module
    :undoc-members:
    :show-inheritance:
 
+relistats.binom_fin module
+--------------------------
+
+.. automodule:: relistats.binom_fin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

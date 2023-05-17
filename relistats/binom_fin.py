@@ -1,11 +1,12 @@
-""" Reliability Engineering Statistics for Binomial Distributions
+""" Reliability Engineering Statistics for finite population sizes with
+Binomial Distributions
 
 Also known as Bernoulli Trials.
 
 Reference:
-S.M. Joshi, "Computation of Reliability Statistics for
-Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
-https://doi.org/10.48550/arXiv.2303.03167
+S.M. Joshi, "Computation of Reliability Statistics for finite samples of
+Success-Failure Experiments," arXiv:TBD [stat.ME], May 2023.
+https://doi.org/10.48550/arXiv.TBD
 """
 from relistats import logger
 from relistats.binomial import confidence
@@ -104,9 +105,9 @@ def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     :type n: int, >=0
     :param f: number of failures
     :type f: int, >=0
-    :param tol: accuracy tolerance
     :param m: remaining samples in population
     :type m: int, >= 0
+    :param tol: accuracy tolerance
     :type tol: float, optional
     :return: (Assurance, reliability, confidence)
     :rtype: tuple

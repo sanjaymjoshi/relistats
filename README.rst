@@ -25,7 +25,8 @@ Concepts
   assurance means 90% reliability with 90% confidence. Given the number of samples
   and number of failures, assurance is just one number.
 
-This library provides methods to calculate these statistics.
+This library provides methods to calculate these statistics for infinite and finite
+population sizes.
 
 Example usage in a python file:
 
@@ -37,21 +38,20 @@ Example usage in a python file:
    a = assurance(n, 0) or 0
    print(f"Assurance at {n} good samples: {a*100:.1f}%")
 
-See
-
-- Paper: S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
+References
+----------
+- S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
   `arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_, March 2023.
-
-- Jupyter notebook showing how to use this library:
+- S.M. Joshi, "Computation of Reliability Statistics for Finite Samples of Success-Failure Experiments,"
+  `arXiv:TBD [stat.ME] <https://doi.org/10.48550/TBD>`_, May 2023.
+- Jupyter notebooks showing how to use this library:
   `relistats_notebook <https://github.com/sanjaymjoshi/relistats_notebook>`_
-
-- Interactive online version of the Jupyter notebook on
-  `Google Colab <https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial.ipynb>`_.
+- Interactive online versions of the Jupyter notebook on Google Colab:
+  - `Infinite population <https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial.ipynb>`_.
+  - `Finite population <https://colab.research.google.com/github/sanjaymjoshi/relistats_notebook/blob/main/relistats_binomial_finite.ipynb>`_.
 
 Additional documentation:
-
 - `Usage <docs/source/usage.rst>`_ for installation and how to use.
-
 - `Background <docs/source/background.rst>`_ for concepts and mathematical background.
 
 Credits

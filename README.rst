@@ -43,7 +43,7 @@ References
 * S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
   `arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_, March 2023.
 * S.M. Joshi, "Computation of Reliability Statistics for Finite Samples of Success-Failure Experiments,"
-  `arXiv:TBD [stat.ME] <https://doi.org/10.48550/TBD>`_, May 2023.
+  `arXiv:2305.16578 [cs.IT] <http://arxiv.org/abs/2305.16578>`_, May 2023.
 * Jupyter notebooks showing how to use this library
   `relistats_notebook <https://github.com/sanjaymjoshi/relistats_notebook>`_
 * Interactive online versions of the Jupyter notebook on Google Colab.

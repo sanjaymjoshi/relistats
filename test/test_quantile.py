@@ -28,11 +28,13 @@ def test_median_index() -> None:
     assert median_index(20, 0.99) == 15
     assert median_index(20, 0.9) == 13
 
+
 def test_median_with_confidence() -> None:
     arr = range(10, 30)
     assert median_with_confidence(0.95, arr) == 24
-    arr_float = [k*0.1 for k in range(10, 30)]
+    arr_float = [k * 0.1 for k in range(10, 30)]
     assert median_with_confidence(0.95, arr_float) == pytest.approx(2.4, abs=0.01)
+
 
 def test_quantile_with_confidence() -> None:
     arr = range(10, 30)

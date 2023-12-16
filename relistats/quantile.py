@@ -65,6 +65,7 @@ def median_index(n: int, c: float = 0.95) -> Optional[int]:
     """
     return None if n < 2 or c <= 0 or c >= 1 else index_at_quantile(n, 0.5, c)
 
+
 def median_with_confidence(c: float, *args) -> Optional[Any]:
     """Returns median value from args at confidence of at least c, if possible.
     Returns None if not possible.

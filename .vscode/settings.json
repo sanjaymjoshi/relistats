@@ -13,5 +13,6 @@
         "sourcery",
         "venv",
         "xtol"
-    ]
+    ],
+    "esbonio.sphinx.confDir": ""
 }

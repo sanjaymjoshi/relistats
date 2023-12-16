@@ -1,10 +1,11 @@
-import scipy.optimize as opt
-import scipy.stats as stats
 from typing import Optional
 
-def confidence_in_quantile(k:int, n:int, q:float) -> float:
-    """ Confidence that quantile q (0 < q < 1) is at less than k'th index out of sorted n samples
-    """
+import scipy.optimize as opt
+import scipy.stats as stats
+
+
+def confidence_in_quantile(k: int, n: int, q: float) -> float:
+    """Confidence that quantile q (0 < q < 1) is at less than k'th index out of sorted n samples"""
     return 1 - stats.binom.sf(k, n, q) or 0
 
 
@@ -28,7 +29,7 @@ def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
     :return: Assurance or None if it could not be computed
     :rtype: float, optional
     """
-    if n <= 1 or k <= 0 or k > n-1:
+    if n <= 1 or k <= 0 or k > n - 1:
         return None
 
     # Use numerical optimization to find real root of the confidence equation
@@ -41,11 +42,12 @@ def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
         xtol=tol,
     )
 
-def index_at_quantile(n: int, q: float, c: Optional[float]=None) -> Optional[int]:
+
+def index_at_quantile(n: int, q: float, c: Optional[float] = None) -> Optional[int]:
     """Find minimum index (0-based) out of n samples, such that the confidence in
     quantile level q is at least c.
 
-    If c is left as None, c = q is assumed 
+    If c is left as None, c = q is assumed
     """
     # sourcery skip: use-next
     if c is None:
@@ -55,7 +57,8 @@ def index_at_quantile(n: int, q: float, c: Optional[float]=None) -> Optional[int
             return k
     return None
 
-def median_index(n: int, c: float=0.95) -> Optional[int]:
+
+def median_index(n: int, c: float = 0.95) -> Optional[int]:
     """Returns index of median in sorted elements of size n, such
     that the confidence is at least c, if possible.
     Returns None if not possible

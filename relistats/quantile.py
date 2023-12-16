@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 import scipy.optimize as opt
 import scipy.stats as stats
@@ -64,3 +64,20 @@ def median_index(n: int, c: float = 0.95) -> Optional[int]:
     Returns None if not possible
     """
     return None if n < 2 or c <= 0 or c >= 1 else index_at_quantile(n, 0.5, c)
+
+def median_with_confidence(c: float, *args) -> Optional[Any]:
+    """Returns median value from args at confidence of at least c, if possible.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    return quantile_with_confidence(0.5, c, *args)
+
+
+def quantile_with_confidence(q: float, c: float, *args) -> Optional[Any]:
+    """Returns q'th quantile value from args at confidence of at least c, if possible.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    n = len(*args)
+    k = index_at_quantile(n, q, c)
+    return sorted(*args)[k] if k else None

@@ -2,9 +2,10 @@
 import pytest
 
 from relistats.quantile import (
-    confidence_in_quantile,
     assurance_in_quantile,
+    confidence_in_quantile,
     index_at_quantile,
+    median_index
 )
 
 def test_confidence_in_quantile() -> None:
@@ -17,4 +18,10 @@ def test_assurance_in_quantile() -> None:
 def test_index_at_quantile() -> None:
     assert index_at_quantile(20, 0.5) == 10
     assert index_at_quantile(20, 0.5, 0.95) == 14
-    
+
+def test_median_index() -> None:
+    assert median_index(20) == 14
+    assert median_index(20, 0.99) == 15
+    assert median_index(20, 0.9) == 13
+
+

@@ -54,3 +54,10 @@ def index_at_quantile(n: int, q: float, c: Optional[float]=None) -> Optional[int
         if confidence_in_quantile(k, n, q) > c:
             return k
     return None
+
+def median_index(n: int, c: float=0.95) -> Optional[int]:
+    """Returns index of median in sorted elements of size n, such
+    that the confidence is at least c, if possible.
+    Returns None if not possible
+    """
+    return None if n < 2 or c <= 0 or c >= 1 else index_at_quantile(n, 0.5, c)

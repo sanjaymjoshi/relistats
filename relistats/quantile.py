@@ -54,13 +54,3 @@ def index_at_quantile(n: int, q: float, c: Optional[float]=None) -> Optional[int
         if confidence_in_quantile(k, n, q) > c:
             return k
     return None
-
-
-if __name__ == "__main__":
-    n = 20
-    for k in range(1, n):
-        print(f"{k}: {assurance_in_quantile(k,n)}")
-    q = 0.5
-    print(f"index at q={q}: {index_at_quantile(n, q)} out of {n}")
-    c = 0.95
-    print(f"At c={c}: {index_at_quantile(n, q, c)} out of {n}")

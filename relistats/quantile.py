@@ -6,7 +6,7 @@ import scipy.stats as stats
 
 def confidence_in_quantile(k: int, n: int, q: float) -> float:
     """Confidence that quantile q (0 < q < 1) is at less than k'th index out of sorted n samples"""
-    return 1 - stats.binom.sf(k, n, q) or 0
+    return stats.binom.cdf(k, n, q)
 
 
 def _assurance_quantile_fn(x: float, k: int, n: int) -> float:

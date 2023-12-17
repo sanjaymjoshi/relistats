@@ -12,6 +12,10 @@ from relistats.quantile import (
 
 def test_confidence_in_quantile() -> None:
     assert confidence_in_quantile(14, 20, 0.5) == pytest.approx(0.98, abs=0.01)
+    assert confidence_in_quantile(19, 20, 0.95) == pytest.approx(0.64, abs=0.01)
+    assert confidence_in_quantile(19, 20, 0.9) == pytest.approx(0.88, abs=0.01)
+    assert confidence_in_quantile(19, 20, 0.85) == pytest.approx(0.96, abs=0.01)
+    assert confidence_in_quantile(1, 20, 0.05) == pytest.approx(0.74, abs=0.01)
 
 
 def test_assurance_in_quantile() -> None:

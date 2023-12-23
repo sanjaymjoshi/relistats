@@ -58,12 +58,48 @@ def index_at_quantile(n: int, q: float, c: Optional[float] = None) -> Optional[i
     return None
 
 
+def interval_at_quantile(
+    n: int, q: float, c: Optional[float] = None
+) -> Optional[tuple[int, int]]:
+    """Find interval indices (0-based) out of n samples, such that the confidence in
+    quantile level q ( 0.5 <= q < 1) is between the two indices is at least c.
+
+    If c is left as None, c = q is assumed
+    """
+    # sourcery skip: use-next
+    if q < 0.5:
+        return None
+
+    if c is None:
+        c = q
+
+    # Focus on one side first, the other will be symmetrical. Need to cut
+    # headroom in confidence in half for this to work.
+    one_sided_c = 1 - (1 - c) / 2
+    for k in range(1, n):
+        if confidence_in_quantile(k, n, q) > one_sided_c:
+            return (n - 1 - k, k)
+    return None
+
+
 def median_index(n: int, c: float = 0.95) -> Optional[int]:
     """Returns index of median in sorted elements of size n, such
     that the confidence is at least c, if possible.
     Returns None if not possible
     """
     return None if n < 2 or c <= 0 or c >= 1 else index_at_quantile(n, 0.5, c)
+
+
+def median_interval(n: int, c: Optional[float] = None) -> Optional[tuple[int, int]]:
+    """Find median indices (0-based) out of n samples, such that the confidence that
+       median is between the two indices is at least c.
+
+    If c is left as None, c = q is assumed
+    """
+    q = 0.5
+    if c is None:
+        c = q
+    return interval_at_quantile(n, q, c)
 
 
 def median_with_confidence(c: float, *args) -> Optional[Any]:
@@ -74,6 +110,14 @@ def median_with_confidence(c: float, *args) -> Optional[Any]:
     return quantile_with_confidence(0.5, c, *args)
 
 
+def median_interval_with_confidence(c: float, *args) -> Optional[tuple[Any, Any]]:
+    """Returns median interval from args at confidence of at least c, if possible.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    return quantile_interval_with_confidence(0.5, c, *args)
+
+
 def quantile_with_confidence(q: float, c: float, *args) -> Optional[Any]:
     """Returns q'th quantile value from args at confidence of at least c, if possible.
     Returns None if not possible.
@@ -82,3 +126,23 @@ def quantile_with_confidence(q: float, c: float, *args) -> Optional[Any]:
     n = len(*args)
     k = index_at_quantile(n, q, c)
     return sorted(*args)[k] if k else None
+
+
+def quantile_interval_with_confidence(
+    q: float, c: float, *args
+) -> Optional[tuple[Any, Any]]:
+    """Returns q'th quantile interval from args at confidence of at least c, if possible.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    n = len(*args)
+    k_indices = interval_at_quantile(n, q, c)
+    return (
+        tuple(
+            sorted(*args)[
+                slice(k_indices[0], k_indices[1] + 1, k_indices[1] - k_indices[0])
+            ]
+        )
+        if k_indices
+        else None
+    )

@@ -8,7 +8,7 @@ ipykernel = "*"
 matplotlib = "*"
 scipy = "*"
 pexpect = "*"
-relistats = {path = "./.."}
+relistats = {editable = true, path = "./.."}
 
 [dev-packages]
 black = "*"

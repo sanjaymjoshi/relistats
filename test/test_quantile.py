@@ -41,6 +41,8 @@ def test_confidence_interval_indices_in_quantile() -> None:
     assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.7) == (48, 55)
     assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.8) == (49, 56)
     assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.9) == (49, 57)
+    assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.95) == (49, 58)
+    assert confidence_interval_indices_in_quantile(n=60, q=0.95, c=0.95) is None
 
     assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.2) == (46, 48)
 

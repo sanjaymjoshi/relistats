@@ -3,7 +3,6 @@ import pytest
 from relistats.quantile import (
     assurance_in_quantile,
     confidence_in_quantile_at_index,
-    confidence_interval_indices_in_quantile,
     index_at_quantile,
     interval_at_quantile,
     median_index,
@@ -11,6 +10,7 @@ from relistats.quantile import (
     median_interval_with_confidence,
     median_with_confidence,
     quantile_interval,
+    quantile_interval_indices,
     quantile_with_confidence,
 )
 
@@ -32,26 +32,26 @@ def test_confidence_interval_indices_in_quantile() -> None:
     # for k in range(41, 53):
     #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
 
-    assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.5) == (42, 48)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.6) == (42, 49)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.7) == (43, 50)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.8) == (42, 51)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.9) == (41, 52)
+    assert quantile_interval_indices(n=60, q=0.8, c=0.5) == (42, 48)
+    assert quantile_interval_indices(n=60, q=0.8, c=0.6) == (42, 49)
+    assert quantile_interval_indices(n=60, q=0.8, c=0.7) == (43, 50)
+    assert quantile_interval_indices(n=60, q=0.8, c=0.8) == (42, 51)
+    assert quantile_interval_indices(n=60, q=0.8, c=0.9) == (41, 52)
 
-    assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.7) == (48, 55)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.8) == (49, 56)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.9) == (49, 57)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.9, c=0.95) == (49, 58)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.95, c=0.95) is None
+    assert quantile_interval_indices(n=60, q=0.9, c=0.7) == (48, 55)
+    assert quantile_interval_indices(n=60, q=0.9, c=0.8) == (49, 56)
+    assert quantile_interval_indices(n=60, q=0.9, c=0.9) == (49, 57)
+    assert quantile_interval_indices(n=60, q=0.9, c=0.95) == (49, 58)
+    assert quantile_interval_indices(n=60, q=0.95, c=0.95) is None
 
-    assert confidence_interval_indices_in_quantile(n=60, q=0.8, c=0.2) == (46, 48)
+    assert quantile_interval_indices(n=60, q=0.8, c=0.2) == (46, 48)
 
-    assert confidence_interval_indices_in_quantile(n=60, q=0.5, c=0.5) == (23, 30)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.5, c=0.7) == (22, 32)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.5, c=0.8) == (21, 33)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.5, c=0.9) == (21, 35)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.5, c=0.95) == (19, 36)
-    assert confidence_interval_indices_in_quantile(n=60, q=0.5, c=0.99) == (19, 39)
+    assert quantile_interval_indices(n=60, q=0.5, c=0.5) == (23, 30)
+    assert quantile_interval_indices(n=60, q=0.5, c=0.7) == (22, 32)
+    assert quantile_interval_indices(n=60, q=0.5, c=0.8) == (21, 33)
+    assert quantile_interval_indices(n=60, q=0.5, c=0.9) == (21, 35)
+    assert quantile_interval_indices(n=60, q=0.5, c=0.95) == (19, 36)
+    assert quantile_interval_indices(n=60, q=0.5, c=0.99) == (19, 39)
 
 
 def test_assurance_in_quantile() -> None:

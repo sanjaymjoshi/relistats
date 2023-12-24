@@ -12,9 +12,7 @@ def confidence_in_quantile_at_index(k: int, n: int, q: float) -> float:
     return stats.binom.cdf(k, n, q)
 
 
-def confidence_interval_indices_in_quantile(
-    n: int, q: float, c: float
-) -> Optional[tuple[int, int]]:
+def quantile_interval_indices(n: int, q: float, c: float) -> Optional[tuple[int, int]]:
     """Returns tuple of two indices (1 to n-2) such that quantile q (0<q<1) lies within
     these two indices of a sorted list with confidence c (0<c<1)
     Return None if such a tuple cannot be computed.
@@ -190,5 +188,5 @@ def quantile_interval(q: float, c: float, *args) -> Optional[tuple[Any, Any]]:
     args is any iterable (list, tuple, set)
     """
     n = len(*args)
-    ii = confidence_interval_indices_in_quantile(n, q, c)
+    ii = quantile_interval_indices(n, q, c)
     return tuple(sorted(*args)[slice(ii[0], ii[1] + 1, ii[1] - ii[0])]) if ii else None

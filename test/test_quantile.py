@@ -10,7 +10,7 @@ from relistats.quantile import (
     median_interval,
     median_interval_with_confidence,
     median_with_confidence,
-    quantile_interval_with_confidence,
+    quantile_interval,
     quantile_with_confidence,
 )
 
@@ -104,14 +104,14 @@ def test_median_interval_with_confidence() -> None:
     )
 
 
-def test_quantile_interval_with_confidence() -> None:
+def test_quantile_interval() -> None:
     arr = range(10, 30)
-    assert quantile_interval_with_confidence(0.75, 0.75, arr) == (12, 27)
-    assert quantile_interval_with_confidence(0.75, 0.9, arr) == (11, 28)
-    assert quantile_interval_with_confidence(0.5, 0.95, arr) == (15, 24)
+    assert quantile_interval(0.75, 0.75, arr) == (20, 26)
+    assert quantile_interval(0.75, 0.9, arr) == (19, 27)
+    assert quantile_interval(0.5, 0.95, arr) == (15, 24)
 
     arr_float = [k * 0.1 for k in range(10, 70)]
-    assert quantile_interval_with_confidence(0.8, 0.8, arr_float) == (
-        pytest.approx(1.7, abs=0.01),
-        pytest.approx(6.2, abs=0.01),
+    assert quantile_interval(0.8, 0.8, arr_float) == (
+        pytest.approx(5.2, abs=0.01),
+        pytest.approx(6.1, abs=0.01),
     )

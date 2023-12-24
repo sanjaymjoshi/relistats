@@ -171,7 +171,7 @@ def median_interval_with_confidence(c: float, *args) -> Optional[tuple[Any, Any]
     Returns None if not possible.
     args is any iterable (list, tuple, set)
     """
-    return quantile_interval_with_confidence(0.5, c, *args)
+    return quantile_interval(0.5, c, *args)
 
 
 def quantile_with_confidence(q: float, c: float, *args) -> Optional[Any]:
@@ -184,21 +184,11 @@ def quantile_with_confidence(q: float, c: float, *args) -> Optional[Any]:
     return sorted(*args)[k] if k else None
 
 
-def quantile_interval_with_confidence(
-    q: float, c: float, *args
-) -> Optional[tuple[Any, Any]]:
+def quantile_interval(q: float, c: float, *args) -> Optional[tuple[Any, Any]]:
     """Returns q'th quantile interval from args at confidence of at least c, if possible.
     Returns None if not possible.
     args is any iterable (list, tuple, set)
     """
     n = len(*args)
-    k_indices = interval_at_quantile(n, q, c)
-    return (
-        tuple(
-            sorted(*args)[
-                slice(k_indices[0], k_indices[1] + 1, k_indices[1] - k_indices[0])
-            ]
-        )
-        if k_indices
-        else None
-    )
+    ii = confidence_interval_indices_in_quantile(n, q, c)
+    return tuple(sorted(*args)[slice(ii[0], ii[1] + 1, ii[1] - ii[0])]) if ii else None

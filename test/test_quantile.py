@@ -3,7 +3,7 @@ import pytest
 from relistats.quantile import (
     assurance_in_quantile,
     confidence_in_quantile_at_index,
-    median_interval_with_confidence,
+    median_interval,
     quantile_interval,
     quantile_interval_indices,
 )
@@ -52,11 +52,11 @@ def test_assurance_in_quantile() -> None:
     assert assurance_in_quantile(14, 20) == pytest.approx(0.67, abs=0.01)
 
 
-def test_median_interval_with_confidence() -> None:
+def test_median_interval() -> None:
     arr = range(10, 30)
-    assert median_interval_with_confidence(0.95, arr) == (15, 24)
+    assert median_interval(0.95, arr) == (15, 24)
     arr_float = [k * 0.1 for k in range(10, 30)]
-    assert median_interval_with_confidence(0.95, arr_float) == (
+    assert median_interval(0.95, arr_float) == (
         pytest.approx(1.5, abs=0.01),
         pytest.approx(2.4, abs=0.01),
     )

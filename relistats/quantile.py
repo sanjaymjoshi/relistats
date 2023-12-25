@@ -97,30 +97,6 @@ def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
     )
 
 
-def interval_at_quantile(
-    n: int, q: float, c: Optional[float] = None
-) -> Optional[tuple[int, int]]:
-    """Find interval indices (0-based) out of n samples, such that the confidence in
-    quantile level q ( 0.5 <= q < 1) is between the two indices is at least c.
-
-    If c is left as None, c = q is assumed
-    """
-    # sourcery skip: use-next
-    if q < 0.5:
-        return None
-
-    if c is None:
-        c = q
-
-    # Focus on one side first, the other will be symmetrical. Need to cut
-    # headroom in confidence in half for this to work.
-    one_sided_c = 1 - (1 - c) / 2
-    for k in range(1, n):
-        if confidence_in_quantile_at_index(k, n, q) > one_sided_c:
-            return (n - 1 - k, k)
-    return None
-
-
 def median_interval_with_confidence(c: float, *args) -> Optional[tuple[Any, Any]]:
     """Returns median interval from args at confidence of at least c, if possible.
     Returns None if not possible.

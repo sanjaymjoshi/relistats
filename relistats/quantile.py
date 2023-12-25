@@ -121,18 +121,6 @@ def interval_at_quantile(
     return None
 
 
-def median_interval(n: int, c: Optional[float] = None) -> Optional[tuple[int, int]]:
-    """Find median indices (0-based) out of n samples, such that the confidence that
-       median is between the two indices is at least c.
-
-    If c is left as None, c = q is assumed
-    """
-    q = 0.5
-    if c is None:
-        c = q
-    return interval_at_quantile(n, q, c)
-
-
 def median_interval_with_confidence(c: float, *args) -> Optional[tuple[Any, Any]]:
     """Returns median interval from args at confidence of at least c, if possible.
     Returns None if not possible.

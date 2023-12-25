@@ -4,7 +4,6 @@ from relistats.quantile import (
     assurance_in_quantile,
     confidence_in_quantile_at_index,
     interval_at_quantile,
-    median_interval,
     median_interval_with_confidence,
     quantile_interval,
     quantile_interval_indices,
@@ -58,12 +57,6 @@ def test_interval_at_qunatile() -> None:
     assert interval_at_quantile(60, 0.75) == (10, 49)
     assert interval_at_quantile(60, 0.75, 0.99) == (6, 53)
     assert interval_at_quantile(60, 0.75, 0.9) == (9, 50)
-
-
-def test_median_interval() -> None:
-    assert median_interval(20) == (7, 12)
-    assert median_interval(20, 0.99) == (3, 16)
-    assert median_interval(20, 0.9) == (5, 14)
 
 
 def test_median_interval_with_confidence() -> None:

@@ -6,6 +6,7 @@ from relistats.quantile import (
     confidence_interval_of_median,
     confidence_interval_of_quantile,
     quantile_interval_indices,
+    tolerance_interval_indices,
 )
 
 
@@ -46,6 +47,19 @@ def test_confidence_interval_indices_in_quantile() -> None:
     assert quantile_interval_indices(n=60, q=0.5, c=0.9) == (21, 35)
     assert quantile_interval_indices(n=60, q=0.5, c=0.95) == (19, 36)
     assert quantile_interval_indices(n=60, q=0.5, c=0.99) == (19, 39)
+
+
+def test_tolerance_interval_indices() -> None:
+    # For debugging
+    # for k in range(41, 53):
+    #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
+
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (2, 54)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (1, 55)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (2, 56)
+
+    assert tolerance_interval_indices(n=80, t=0.9, c=0.8) == (1, 78)
+    assert tolerance_interval_indices(n=120, t=0.9, c=0.9) == (1, 117)
 
 
 def test_assurance_in_quantile() -> None:

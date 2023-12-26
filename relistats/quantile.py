@@ -54,13 +54,22 @@ def quantile_interval_indices(n: int, q: float, c: float) -> Optional[tuple[int,
         k_lo = k_lo - 1
         if k_lo == 0:
             logger.error(
-                "Lower bound of interval needs to be > 0.",
-                f" Upper bound {k_hi} at confidence {c_hi}",
+                "Lower bound of interval needs to be > 0. Upper bound %d at confidence %f:.2", k_hi, c_hi
             )
             return None
         c_lo = confidence_in_quantile_at_index(k_lo, n, q)
 
     return (k_lo, k_hi)
+
+
+def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
+    q = (1-t)/2 # Half budget
+    ii1 = quantile_interval_indices(n, q, c)
+    ii2 = quantile_interval_indices(n, 1-q, c)
+
+    if ii1 is None or ii2 is None:
+        return None
+    return (min(ii1[0], ii2[0]), max(ii1[1], ii2[1]))
 
 
 def _assurance_quantile_fn(x: float, k: int, n: int) -> float:

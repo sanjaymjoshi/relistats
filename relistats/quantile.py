@@ -97,15 +97,15 @@ def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
     )
 
 
-def median_interval(c: float, *args) -> Optional[tuple[Any, Any]]:
+def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
     """Returns median interval from args at confidence of at least c, if possible.
     Returns None if not possible.
     args is any iterable (list, tuple, set)
     """
-    return quantile_interval(0.5, c, *args)
+    return confidence_interval_of_quantile(0.5, c, *args)
 
 
-def quantile_interval(q: float, c: float, *args) -> Optional[tuple[Any, Any]]:
+def confidence_interval_of_quantile(q: float, c: float, *args) -> Optional[tuple[Any, Any]]:
     """Returns q'th quantile interval from args at confidence of at least c, if possible.
     Returns None if not possible.
     args is any iterable (list, tuple, set)

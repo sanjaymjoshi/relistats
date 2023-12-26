@@ -72,9 +72,23 @@ def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int
 
 
 def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
-    q = (1-t)/2 # Half budget
-    ii1 = quantile_interval_indices(n, q, c)
-    ii2 = quantile_interval_indices(n, 1-q, c)
+    
+    # We construct the tolerance interval by eliminating
+    # two half intervals at either ends of the sorted samples.
+
+    pp = (1-t)/2 # Need half the budget quantile budget at either ends
+    # Suppose t > 0.5, then pp < 0.5. We will first find the index
+    # of samples at the lower end.
+    # Suppose t = 0.8, then pp = 0.1
+    ii1 = quantile_interval_indices(n, pp, c)
+    # Probability (sample at index j < sample at ii1[0]) >= c
+    # Thus, [0, ii1[0]] gives us the lower interval to eliminate
+
+    # Start at the higher interval, the budget is 1-pp now.
+    # From our example, 1-p = 0.9
+    ii2 = quantile_interval_indices(n, 1-pp, c)
+    # Probability (sample at index j > sample at ii2[1]) >= c
+    # Thus, [ii2[1], n] gives us the higher interval to eliminate
 
     if ii1 is None or ii2 is None:
         return None

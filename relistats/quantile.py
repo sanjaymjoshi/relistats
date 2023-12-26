@@ -22,7 +22,7 @@ def quantile_interval_indices(n: int, q: float, c: float) -> Optional[tuple[int,
         return None
 
     if c <= 0 or c >= 1:
-        logger.error(f"Confindence c has to be > 0 and < 1, found: {c}")
+        logger.error(f"Confidence c has to be > 0 and < 1, found: {c}")
         return None
 
     n_min = 4

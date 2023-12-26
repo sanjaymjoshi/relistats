@@ -7,49 +7,57 @@ import scipy.stats as stats
 from relistats import logger
 
 
-def confidence_in_quantile_at_index(k: int, n: int, q: float) -> float:
-    """Confidence that quantile q (0 < q < 1) is at less than k'th index out of sorted n samples"""
-    return stats.binom.cdf(k, n, q)
+def confidence_in_quantile_at_index(j: int, n: int, p: float) -> float:
+    """Confidence (probability) that in sorted samples of size n, 
+       p^th quantile (0 < p < 1) is greater than the sample
+       at j'th place.
+       From https://online.stat.psu.edu/stat415/lesson/19/19.2
+       c = sum_{k=0}^{j-1} nCk * p^k * (1-p)^(n-k)
+       This is same as cumulative density function for a binomial
+       distribution, evaluated at j-1 out of n samples. 
+    """
+    return stats.binom.cdf(j-1, n, p)
 
 
-def quantile_interval_indices(n: int, q: float, c: float) -> Optional[tuple[int, int]]:
+def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
     """Returns tuple of two indices (1 to n-2) such that quantile q (0<q<1) lies within
     these two indices of a sorted list with confidence c (0<c<1)
     Return None if such a tuple cannot be computed.
     """
-    if q <= 0 or q >= 1:
-        logger.error(f"Quantile has to be > 0 and < 1, found: {q}")
+    if pp <= 0 or pp >= 1:
+        logger.error("Quantile has to be > 0 and < 1, found: %f", pp)
         return None
 
     if c <= 0 or c >= 1:
-        logger.error(f"Confidence c has to be > 0 and < 1, found: {c}")
+        logger.error("Confidence c has to be > 0 and < 1, found: %f", c)
         return None
 
     n_min = 4
     if n <= n_min:
-        logger.error(f"Need at least {n_min} samples, found: {n}")
+        logger.error("Need at least %d samples, found: %d", n_min, n)
         return None
 
-    k_hi = ceil(q * n)
+    k_hi = ceil(pp * n)
     if k_hi >= n - 1:
-        logger.error(f"Not enough samples, {n}, for quantile {q}. Need more.")
+        logger.error("Not enough samples, %d, for quantile %f. Need more.", n, pp)
         return None
 
-    c_hi = confidence_in_quantile_at_index(k_hi, n, q)
+    c_hi = confidence_in_quantile_at_index(k_hi, n, pp)
     while c_hi < c:
         k_hi += 1
         if k_hi == n - 1:
-            logger.error(f"Highest confidence in {n-2} samples {c_hi} < {c}")
+            logger.error("Highest confidence in %d samples %f < %f", n-2, c_hi, c)
             return None
 
-        c_hi = confidence_in_quantile_at_index(k_hi, n, q)
+        c_hi = confidence_in_quantile_at_index(k_hi, n, pp)
 
     logger.debug(
-        f"Found higher index {k_hi} at confidence {c_hi} for n={n}, q={q}, c={c}"
+        "Found higher index %d at confidence %f for n=%d, q=%f, c=%f",
+        k_hi, c_hi, n, pp
     )
 
     k_lo = k_hi - 1
-    c_lo = confidence_in_quantile_at_index(k_lo, n, q)
+    c_lo = confidence_in_quantile_at_index(k_lo, n, pp)
     while c_hi - c_lo < c:
         k_lo = k_lo - 1
         if k_lo == 0:
@@ -57,7 +65,7 @@ def quantile_interval_indices(n: int, q: float, c: float) -> Optional[tuple[int,
                 "Lower bound of interval needs to be > 0. Upper bound %d at confidence %f:.2", k_hi, c_hi
             )
             return None
-        c_lo = confidence_in_quantile_at_index(k_lo, n, q)
+        c_lo = confidence_in_quantile_at_index(k_lo, n, pp)
 
     return (k_lo, k_hi)
 

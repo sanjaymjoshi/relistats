@@ -34,15 +34,15 @@ def test_textbook_examples() -> None:
     
 
 def test_confidence_in_quantile_at_index() -> None:
-    assert confidence_in_quantile_at_index(14, 20, 0.5) == pytest.approx(0.98, abs=0.01)
+    assert confidence_in_quantile_at_index(14, 20, 0.5) == pytest.approx(0.942, abs=0.001)
     assert confidence_in_quantile_at_index(19, 20, 0.95) == pytest.approx(
-        0.64, abs=0.01
+        0.264, abs=0.001
     )
-    assert confidence_in_quantile_at_index(19, 20, 0.9) == pytest.approx(0.88, abs=0.01)
+    assert confidence_in_quantile_at_index(19, 20, 0.9) == pytest.approx(0.608, abs=0.001)
     assert confidence_in_quantile_at_index(19, 20, 0.85) == pytest.approx(
-        0.96, abs=0.01
+        0.824, abs=0.001
     )
-    assert confidence_in_quantile_at_index(1, 20, 0.05) == pytest.approx(0.74, abs=0.01)
+    assert confidence_in_quantile_at_index(1, 20, 0.05) == pytest.approx(0.358, abs=0.01)
 
 
 def test_confidence_interval_indices_in_quantile() -> None:
@@ -50,26 +50,35 @@ def test_confidence_interval_indices_in_quantile() -> None:
     # for k in range(41, 53):
     #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
 
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.5) == (42, 48)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.6) == (42, 49)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.7) == (43, 50)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.8) == (42, 51)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.9) == (41, 52)
+    # from textbook
+    assert quantile_interval_indices(n=5, pp=0.5, c=0.93) == (1, 5)
+    assert quantile_interval_indices(n=8, pp=0.5, c=0.92) == (2, 7)
+    assert quantile_interval_indices(n=11, pp=0.5, c=0.93) == (3, 9)
+    assert quantile_interval_indices(n=14, pp=0.5, c=0.94) == (4, 11)
+    assert quantile_interval_indices(n=17, pp=0.5, c=0.95) == (5, 13)
+    assert quantile_interval_indices(n=20, pp=0.5, c=0.95) == (6, 15)
 
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.7) == (48, 55)
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.8) == (49, 56)
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.9) == (49, 57)
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.95) == (49, 58)
-    assert quantile_interval_indices(n=60, pp=0.95, c=0.95) is None
+
+    assert quantile_interval_indices(n=60, pp=0.8, c=0.5) == (43, 49)
+    assert quantile_interval_indices(n=60, pp=0.8, c=0.6) == (43, 50)
+    assert quantile_interval_indices(n=60, pp=0.8, c=0.7) == (44, 51)
+    assert quantile_interval_indices(n=60, pp=0.8, c=0.8) == (43, 52)
+    assert quantile_interval_indices(n=60, pp=0.8, c=0.9) == (42, 53)
+
+    assert quantile_interval_indices(n=60, pp=0.9, c=0.7) == (49, 56)
+    assert quantile_interval_indices(n=60, pp=0.9, c=0.8) == (50, 57)
+    assert quantile_interval_indices(n=60, pp=0.9, c=0.9) == (50, 58)
+    assert quantile_interval_indices(n=60, pp=0.9, c=0.95) == (50, 59)
+    assert quantile_interval_indices(n=60, pp=0.95, c=0.95) == (52, 60)
 
     assert quantile_interval_indices(n=60, pp=0.8, c=0.2) == (46, 48)
 
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.5) == (23, 30)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.7) == (22, 32)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.8) == (21, 33)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.9) == (21, 35)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.95) == (19, 36)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.99) == (19, 39)
+    assert quantile_interval_indices(n=60, pp=0.5, c=0.5) == (24, 31)
+    assert quantile_interval_indices(n=60, pp=0.5, c=0.7) == (23, 33)
+    assert quantile_interval_indices(n=60, pp=0.5, c=0.8) == (22, 34)
+    assert quantile_interval_indices(n=60, pp=0.5, c=0.9) == (22, 36)
+    assert quantile_interval_indices(n=60, pp=0.5, c=0.95) == (20, 37)
+    assert quantile_interval_indices(n=60, pp=0.5, c=0.99) == (20, 40)
 
 
 def test_tolerance_interval_indices() -> None:
@@ -77,36 +86,36 @@ def test_tolerance_interval_indices() -> None:
     # for k in range(41, 53):
     #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
 
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (2, 54)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (1, 55)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (2, 56)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (3, 55)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (2, 56)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (3, 57)
 
-    assert tolerance_interval_indices(n=80, t=0.9, c=0.8) == (1, 78)
-    assert tolerance_interval_indices(n=120, t=0.9, c=0.9) == (1, 117)
+    assert tolerance_interval_indices(n=80, t=0.9, c=0.8) == (2, 79)
+    assert tolerance_interval_indices(n=120, t=0.9, c=0.9) == (2, 118)
 
 
 def test_assurance_in_quantile() -> None:
-    assert assurance_in_quantile(14, 20) == pytest.approx(0.67, abs=0.01)
+    assert assurance_in_quantile(14, 20) == pytest.approx(0.635, abs=0.001)
 
 
 def test_median_interval() -> None:
     arr = range(10, 30)
-    assert confidence_interval_of_median(0.95, arr) == (15, 24)
+    assert confidence_interval_of_median(0.95, arr) == (16, 25)
     arr_float = [k * 0.1 for k in range(10, 30)]
     assert confidence_interval_of_median(0.95, arr_float) == (
-        pytest.approx(1.5, abs=0.01),
-        pytest.approx(2.4, abs=0.01),
+        pytest.approx(1.6, abs=0.01),
+        pytest.approx(2.5, abs=0.01),
     )
 
 
 def test_quantile_interval() -> None:
     arr = range(10, 30)
-    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (20, 26)
-    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (19, 27)
-    assert confidence_interval_of_quantile(0.5, 0.95, arr) == (15, 24)
+    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (21, 27)
+    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (20, 28)
+    assert confidence_interval_of_quantile(0.5, 0.95, arr) == (16, 25)
 
     arr_float = [k * 0.1 for k in range(10, 70)]
     assert confidence_interval_of_quantile(0.8, 0.8, arr_float) == (
-        pytest.approx(5.2, abs=0.01),
-        pytest.approx(6.1, abs=0.01),
+        pytest.approx(5.3, abs=0.01),
+        pytest.approx(6.2, abs=0.01),
     )

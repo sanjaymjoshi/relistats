@@ -10,11 +10,12 @@ from relistats import logger
 def confidence_in_quantile_at_index(j: int, n: int, p: float) -> float:
     """Confidence (probability) that in sorted samples of size n, 
        p^th quantile (0 < p < 1) is greater than the sample
-       at j'th place.
+       at j'th place out of n, 0 <= j <= n
        From https://online.stat.psu.edu/stat415/lesson/19/19.2
        c = sum_{k=0}^{j-1} nCk * p^k * (1-p)^(n-k)
        This is same as cumulative density function for a binomial
        distribution, evaluated at j-1 out of n samples. 
+       Note that using j=n+1 will return 1.
     """
     return stats.binom.cdf(j-1, n, p)
 
@@ -45,8 +46,8 @@ def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int
     c_hi = confidence_in_quantile_at_index(k_hi, n, pp)
     while c_hi < c:
         k_hi += 1
-        if k_hi == n - 1:
-            logger.error("Highest confidence in %d samples %f < %f", n-2, c_hi, c)
+        if k_hi == n+1:
+            logger.error("Highest confidence in %d samples %f < %f", k_hi-1, c_hi, c)
             return None
 
         c_hi = confidence_in_quantile_at_index(k_hi, n, pp)

@@ -89,9 +89,12 @@ def test_tolerance_interval_indices() -> None:
     assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (3, 55)
     assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (2, 56)
     assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (3, 57)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.9) == (2, 58)
+    assert tolerance_interval_indices(n=60, t=0.85, c=0.85) == (2, 59)
+    assert tolerance_interval_indices(n=60, t=0.9, c=0.9) is None
 
-    assert tolerance_interval_indices(n=80, t=0.9, c=0.8) == (2, 79)
-    assert tolerance_interval_indices(n=120, t=0.9, c=0.9) == (2, 118)
+    assert tolerance_interval_indices(n=64, t=0.9, c=0.9) == (1, 64)
+    assert tolerance_interval_indices(n=161, t=0.95, c=0.95) == (1, 161)
 
 
 def test_assurance_in_quantile() -> None:

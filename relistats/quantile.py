@@ -21,8 +21,8 @@ def confidence_in_quantile_at_index(j: int, n: int, p: float) -> float:
 
 
 def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tuple of two indices (1 to n-2) such that quantile q (0<q<1) lies within
-    these two indices of a sorted list with confidence c (0<c<1)
+    """Returns tuple of two indices (1 to n) such that quantile pp (0<pp<1) lies within
+    these two indices of n sorted samples at confidence of at least c (0<c<1)
     Return None if such a tuple cannot be computed.
     """
     if pp <= 0 or pp >= 1:

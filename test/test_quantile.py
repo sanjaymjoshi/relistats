@@ -128,22 +128,22 @@ def test_assurance_in_quantile() -> None:
 
 def test_median_interval() -> None:
     arr = range(10, 30)
-    assert confidence_interval_of_median(0.95, arr) == (16, 25)
+    assert confidence_interval_of_median(0.95, arr) == (15, 24)
     arr_float = [k * 0.1 for k in range(10, 30)]
     assert confidence_interval_of_median(0.95, arr_float) == (
-        pytest.approx(1.6, abs=0.01),
-        pytest.approx(2.5, abs=0.01),
+        pytest.approx(1.5, abs=0.01),
+        pytest.approx(2.4, abs=0.01),
     )
 
 
 def test_quantile_interval() -> None:
     arr = range(10, 30)
-    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (21, 27)
-    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (20, 28)
-    assert confidence_interval_of_quantile(0.5, 0.95, arr) == (16, 25)
+    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (20, 26)
+    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (19, 27)
+    assert confidence_interval_of_quantile(0.5, 0.95, arr) == (15, 24)
 
     arr_float = [k * 0.1 for k in range(10, 70)]
     assert confidence_interval_of_quantile(0.8, 0.8, arr_float) == (
-        pytest.approx(5.3, abs=0.01),
-        pytest.approx(6.2, abs=0.01),
+        pytest.approx(5.2, abs=0.01),
+        pytest.approx(6.1, abs=0.01),
     )

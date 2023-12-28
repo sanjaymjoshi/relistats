@@ -10,13 +10,15 @@ from relistats.quantile import (
 )
 
 
-# Reference: https://online.stat.psu.edu/stat415/lesson/19/19.1
 def confidence_from_textbook_example(n, i, j, p) -> float:
     return confidence_in_quantile_at_index(j, n, p) - confidence_in_quantile_at_index(
         i, n, p
     )
 
 
+# Textbook Reference: https://online.stat.psu.edu/stat415/lesson/19/19.1
+# Penn State Department of Statistics, "STAT 415: Introduction to Mathematical Statistics", Lesson 19.1
+# See Table of confidence numbers
 def test_textbook_examples() -> None:
     assert confidence_from_textbook_example(5, 1, 5, 0.5) == pytest.approx(
         0.9376, abs=0.001
@@ -88,11 +90,10 @@ def test_confidence_in_quantile_at_index() -> None:
 
 
 def test_confidence_interval_indices_in_quantile() -> None:
-    # For debugging
-    # for k in range(41, 53):
-    #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
-
-    # from textbook
+    # Same numbers from the table in textbook mentioned above.
+    # The confidence numbers are set to two decimal places to see if the
+    # same interval as in the textbook is returned for a few samples
+    # from the table
     assert quantile_interval_indices(n=5, pp=0.5, c=0.93) == (1, 5)
     assert quantile_interval_indices(n=8, pp=0.5, c=0.92) == (2, 7)
     assert quantile_interval_indices(n=11, pp=0.5, c=0.93) == (3, 9)
@@ -100,6 +101,7 @@ def test_confidence_interval_indices_in_quantile() -> None:
     assert quantile_interval_indices(n=17, pp=0.5, c=0.95) == (5, 13)
     assert quantile_interval_indices(n=20, pp=0.5, c=0.95) == (6, 15)
 
+    # The rest are regression tests
     assert quantile_interval_indices(n=60, pp=0.8, c=0.5) == (43, 49)
     assert quantile_interval_indices(n=60, pp=0.8, c=0.6) == (43, 50)
     assert quantile_interval_indices(n=60, pp=0.8, c=0.7) == (44, 51)
@@ -123,10 +125,6 @@ def test_confidence_interval_indices_in_quantile() -> None:
 
 
 def test_tolerance_interval_indices() -> None:
-    # For debugging
-    # for k in range(41, 53):
-    #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
-
     assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (7, 55)
     assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (6, 56)
     assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (5, 57)

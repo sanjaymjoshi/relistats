@@ -193,6 +193,7 @@ def confidence_interval_of_quantile(
     """
     n = len(*args)
     ii = quantile_interval_places(n, q, c)
+    # Need to subtract 1 from the places, to account for 0-based index
     return (
         tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
     )

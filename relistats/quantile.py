@@ -20,23 +20,35 @@ def confidence_in_quantile_at_index(j: int, n: int, p: float) -> float:
     return stats.binom.cdf(j - 1, n, p)
 
 
+def _quantile_invalid(pp: float) -> bool:
+    if pp <= 0 or pp >= 1:
+        logger.error("Quantile has to be > 0 and < 1, found: %f", pp)
+        return True
+    return False
+
+
+def _confidence_invalid(c: float) -> bool:
+    if c <= 0 or c >= 1:
+        logger.error("Confidence c has to be > 0 and < 1, found: %f", c)
+        return True
+    return False
+
+
+def _num_samples_invalid(n: int) -> bool:
+    n_min = 4
+    if n <= n_min:
+        logger.error("Need at least %d samples, found: %d", n_min, n)
+        return True
+    return False
+
+
 def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
     """Returns tuple of two indices (1 to n) such that quantile pp (0<pp<1) lies within
     these two indices of n sorted samples at confidence of at least c (0<c<1)
     Return None if such a tuple cannot be computed. If that happens, try to increase n,
     reduce pp, or reduce c.
     """
-    if pp <= 0 or pp >= 1:
-        logger.error("Quantile has to be > 0 and < 1, found: %f", pp)
-        return None
-
-    if c <= 0 or c >= 1:
-        logger.error("Confidence c has to be > 0 and < 1, found: %f", c)
-        return None
-
-    n_min = 4
-    if n <= n_min:
-        logger.error("Need at least %d samples, found: %d", n_min, n)
+    if _quantile_invalid(pp) or _confidence_invalid(c) or _num_samples_invalid(n):
         return None
 
     k_hi = ceil(pp * n)
@@ -84,6 +96,9 @@ def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int
     # quantile of 0.5 + t/2.
     # At the low end, start at zero and keep incrementing the index until confidence
     # exceeds 1-c for quantile of 0.5 - t/2.
+    if _quantile_invalid(t) or _confidence_invalid(c) or _num_samples_invalid(n):
+        return None
+
     median_index = (n + 1) // 2
     j_hi = median_index
     p_hi = 0.5 + t / 2
@@ -114,18 +129,18 @@ def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int
     return (j_lo, j_hi)
 
 
-def _assurance_quantile_fn(x: float, k: int, n: int) -> float:
+def _assurance_quantile_fn(x: float, j: int, n: int) -> float:
     """Function to find roots of x = confidence_in_quantile(n, f, x)"""
-    x_hat = confidence_in_quantile_at_index(k, n, x) or 0
+    x_hat = confidence_in_quantile_at_index(j, n, x) or 0
     return x_hat - x
 
 
-def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
-    """Assurance level at k'th index out of n sorted samples. The confidence
+def assurance_in_quantile(j: int, n: int, tol=0.001) -> Optional[float]:
+    """Assurance level at j'th index out of n sorted samples. The confidence
        is at least the quantile level.
 
-    :param k: sample index (0-based)
-    :type k: int, >0
+    :param j: sample index
+    :type j: int, >0
     :param n: number of samples
     :type n: int, >=0
     :param tol: accuracy tolerance
@@ -134,7 +149,13 @@ def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
     :return: Assurance or None if it could not be computed
     :rtype: float, optional
     """
-    if n <= 1 or k <= 0 or k > n - 1:
+    if _num_samples_invalid(n):
+        return None
+
+    if j <= 0 or j > n - 1:
+        logger.error(
+            "Sample index %d out of range, need to be between 0 and %d", j, n - 1
+        )
         return None
 
     # Use numerical optimization to find real root of the confidence equation
@@ -143,7 +164,7 @@ def assurance_in_quantile(k: int, n: int, tol=0.001) -> Optional[float]:
         _assurance_quantile_fn,
         a=0,  # Lowest possible value
         b=1,  # Highest possible value
-        args=(k, n),
+        args=(j, n),
         xtol=tol,
     )
 

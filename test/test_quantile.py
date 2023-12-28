@@ -2,18 +2,16 @@ import pytest
 
 from relistats.quantile import (
     assurance_in_quantile,
-    confidence_in_quantile_at_index,
+    confidence_in_quantile,
     confidence_interval_of_median,
     confidence_interval_of_quantile,
-    quantile_interval_indices,
-    tolerance_interval_indices,
+    quantile_interval_places,
+    tolerance_interval_places,
 )
 
 
 def confidence_from_textbook_example(n, i, j, p) -> float:
-    return confidence_in_quantile_at_index(j, n, p) - confidence_in_quantile_at_index(
-        i, n, p
-    )
+    return confidence_in_quantile(j, n, p) - confidence_in_quantile(i, n, p)
 
 
 # Textbook Reference: https://online.stat.psu.edu/stat415/lesson/19/19.1
@@ -72,21 +70,11 @@ def test_textbook_examples() -> None:
 
 
 def test_confidence_in_quantile_at_index() -> None:
-    assert confidence_in_quantile_at_index(14, 20, 0.5) == pytest.approx(
-        0.942, abs=0.001
-    )
-    assert confidence_in_quantile_at_index(19, 20, 0.95) == pytest.approx(
-        0.264, abs=0.001
-    )
-    assert confidence_in_quantile_at_index(19, 20, 0.9) == pytest.approx(
-        0.608, abs=0.001
-    )
-    assert confidence_in_quantile_at_index(19, 20, 0.85) == pytest.approx(
-        0.824, abs=0.001
-    )
-    assert confidence_in_quantile_at_index(1, 20, 0.05) == pytest.approx(
-        0.358, abs=0.01
-    )
+    assert confidence_in_quantile(14, 20, 0.5) == pytest.approx(0.942, abs=0.001)
+    assert confidence_in_quantile(19, 20, 0.95) == pytest.approx(0.264, abs=0.001)
+    assert confidence_in_quantile(19, 20, 0.9) == pytest.approx(0.608, abs=0.001)
+    assert confidence_in_quantile(19, 20, 0.85) == pytest.approx(0.824, abs=0.001)
+    assert confidence_in_quantile(1, 20, 0.05) == pytest.approx(0.358, abs=0.01)
 
 
 def test_confidence_interval_indices_in_quantile() -> None:
@@ -94,44 +82,44 @@ def test_confidence_interval_indices_in_quantile() -> None:
     # The confidence numbers are set to two decimal places to see if the
     # same interval as in the textbook is returned for a few samples
     # from the table
-    assert quantile_interval_indices(n=5, pp=0.5, c=0.93) == (1, 5)
-    assert quantile_interval_indices(n=8, pp=0.5, c=0.92) == (2, 7)
-    assert quantile_interval_indices(n=11, pp=0.5, c=0.93) == (3, 9)
-    assert quantile_interval_indices(n=14, pp=0.5, c=0.94) == (4, 11)
-    assert quantile_interval_indices(n=17, pp=0.5, c=0.95) == (5, 13)
-    assert quantile_interval_indices(n=20, pp=0.5, c=0.95) == (6, 15)
+    assert quantile_interval_places(n=5, pp=0.5, c=0.93) == (1, 5)
+    assert quantile_interval_places(n=8, pp=0.5, c=0.92) == (2, 7)
+    assert quantile_interval_places(n=11, pp=0.5, c=0.93) == (3, 9)
+    assert quantile_interval_places(n=14, pp=0.5, c=0.94) == (4, 11)
+    assert quantile_interval_places(n=17, pp=0.5, c=0.95) == (5, 13)
+    assert quantile_interval_places(n=20, pp=0.5, c=0.95) == (6, 15)
 
     # The rest are regression tests
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.5) == (43, 49)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.6) == (43, 50)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.7) == (44, 51)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.8) == (43, 52)
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.9) == (42, 53)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.5) == (43, 49)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.6) == (43, 50)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.7) == (44, 51)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.8) == (43, 52)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.9) == (42, 53)
 
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.7) == (49, 56)
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.8) == (50, 57)
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.9) == (50, 58)
-    assert quantile_interval_indices(n=60, pp=0.9, c=0.95) == (50, 59)
-    assert quantile_interval_indices(n=60, pp=0.95, c=0.95) == (52, 60)
+    assert quantile_interval_places(n=60, pp=0.9, c=0.7) == (49, 56)
+    assert quantile_interval_places(n=60, pp=0.9, c=0.8) == (50, 57)
+    assert quantile_interval_places(n=60, pp=0.9, c=0.9) == (50, 58)
+    assert quantile_interval_places(n=60, pp=0.9, c=0.95) == (50, 59)
+    assert quantile_interval_places(n=60, pp=0.95, c=0.95) == (52, 60)
 
-    assert quantile_interval_indices(n=60, pp=0.8, c=0.2) == (46, 48)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.2) == (46, 48)
 
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.5) == (24, 31)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.7) == (23, 33)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.8) == (22, 34)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.9) == (22, 36)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.95) == (20, 37)
-    assert quantile_interval_indices(n=60, pp=0.5, c=0.99) == (20, 40)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.5) == (24, 31)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.7) == (23, 33)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.8) == (22, 34)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.9) == (22, 36)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.95) == (20, 37)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.99) == (20, 40)
 
 
 def test_tolerance_interval_indices() -> None:
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (7, 55)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (6, 56)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (5, 57)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.9) == (4, 58)
-    assert tolerance_interval_indices(n=60, t=0.85, c=0.85) == (3, 59)
-    assert tolerance_interval_indices(n=60, t=0.9, c=0.9) == (2, 60)
-    assert tolerance_interval_indices(n=120, t=0.95, c=0.95) == (2, 120)
+    assert tolerance_interval_places(n=60, t=0.8, c=0.5) == (7, 55)
+    assert tolerance_interval_places(n=60, t=0.8, c=0.7) == (6, 56)
+    assert tolerance_interval_places(n=60, t=0.8, c=0.8) == (5, 57)
+    assert tolerance_interval_places(n=60, t=0.8, c=0.9) == (4, 58)
+    assert tolerance_interval_places(n=60, t=0.85, c=0.85) == (3, 59)
+    assert tolerance_interval_places(n=60, t=0.9, c=0.9) == (2, 60)
+    assert tolerance_interval_places(n=120, t=0.95, c=0.95) == (2, 120)
 
 
 def test_assurance_in_quantile() -> None:

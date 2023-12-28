@@ -7,10 +7,10 @@ import scipy.stats as stats
 from relistats import logger
 
 
-def confidence_in_quantile_at_index(j: int, n: int, p: float) -> float:
+def confidence_in_quantile(j: int, n: int, p: float) -> float:
     """Confidence (probability) that in sorted samples of size n,
     p^th quantile (0 < p < 1) is greater than the sample
-    at j'th place out of n, 0 <= j <= n
+    at j'th place out of n, 1 <= j <= n
     From https://online.stat.psu.edu/stat415/lesson/19/19.2
     c = sum_{k=0}^{j-1} nCk * p^k * (1-p)^(n-k)
     This is same as cumulative density function for a binomial
@@ -42,9 +42,15 @@ def _num_samples_invalid(n: int) -> bool:
     return False
 
 
-def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tuple of two indices (1 to n) such that quantile pp (0<pp<1) lies within
-    these two indices of n sorted samples at confidence of at least c (0<c<1)
+def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
+    """Returns tuple of two places (1..n) such that quantile pp (0<pp<1) lies within
+    these two places of n sorted samples at confidence of at least c (0<c<1).
+
+    Note that the places are not indexed at zero!
+
+    Use this method if you plan to sort samples yourself, else you can use
+    confidence_interval_of_quantile method.
+
     Return None if such a tuple cannot be computed. If that happens, try to increase n,
     reduce pp, or reduce c.
     """
@@ -56,21 +62,21 @@ def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int
         logger.error("Not enough samples, %d, for quantile %f. Need more.", n, pp)
         return None
 
-    c_hi = confidence_in_quantile_at_index(k_hi, n, pp)
+    c_hi = confidence_in_quantile(k_hi, n, pp)
     while c_hi < c:
         k_hi += 1
         if k_hi == n + 1:
             logger.error("Highest confidence in %d samples %f < %f", k_hi - 1, c_hi, c)
             return None
 
-        c_hi = confidence_in_quantile_at_index(k_hi, n, pp)
+        c_hi = confidence_in_quantile(k_hi, n, pp)
 
     logger.debug(
         "Found higher index %d at confidence %f for n=%d, q=%f, c=%f", k_hi, c_hi, n, pp
     )
 
     k_lo = k_hi - 1
-    c_lo = confidence_in_quantile_at_index(k_lo, n, pp)
+    c_lo = confidence_in_quantile(k_lo, n, pp)
     while c_hi - c_lo < c:
         k_lo = k_lo - 1
         if k_lo == 0:
@@ -80,15 +86,15 @@ def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int
                 c_hi,
             )
             return None
-        c_lo = confidence_in_quantile_at_index(k_lo, n, pp)
+        c_lo = confidence_in_quantile(k_lo, n, pp)
 
     return (k_lo, k_hi)
 
 
-def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tolerance interval indices. Out of n sorted samples, a fraction of t samples
-    are expected to be within these two indices, with a probability of at least c.
-    Returns None if indices cannot be calculated. If that happens, try to increase n,
+def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
+    """Returns tolerance interval places. Out of n sorted samples, a fraction of t samples
+    are expected to be within these two places, with a probability of at least c.
+    Returns None if such tuple cannot be calculated. If that happens, try to increase n,
     reduce t, or reduce c.
     """
     # Construct the interval in two halves, each with t/2 fraction.
@@ -102,7 +108,7 @@ def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int
     median_index = (n + 1) // 2
     j_hi = median_index
     p_hi = 0.5 + t / 2
-    while confidence_in_quantile_at_index(j_hi, n, p_hi) < c:
+    while confidence_in_quantile(j_hi, n, p_hi) < c:
         j_hi += 1
         if j_hi == n + 1:
             logger.error(
@@ -115,7 +121,7 @@ def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int
     # Now start at zero index and quantile of 0.5 - t/2
     j_lo = 0
     p_lo = 0.5 - t / 2
-    while confidence_in_quantile_at_index(j_lo, n, p_lo) < 1 - c:
+    while confidence_in_quantile(j_lo, n, p_lo) < 1 - c:
         j_lo += 1
         if j_lo == median_index:
             logger.error(
@@ -131,7 +137,7 @@ def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int
 
 def _assurance_quantile_fn(x: float, j: int, n: int) -> float:
     """Function to find roots of x = confidence_in_quantile(n, f, x)"""
-    x_hat = confidence_in_quantile_at_index(j, n, x) or 0
+    x_hat = confidence_in_quantile(j, n, x) or 0
     return x_hat - x
 
 
@@ -181,11 +187,12 @@ def confidence_interval_of_quantile(
     q: float, c: float, *args
 ) -> Optional[tuple[Any, Any]]:
     """Returns q'th quantile interval from args at confidence of at least c, if possible.
+    Use this method if you data is not sorted already, else you can use quantile_interval_places.
     Returns None if not possible.
     args is any iterable (list, tuple, set)
     """
     n = len(*args)
-    ii = quantile_interval_indices(n, q, c)
+    ii = quantile_interval_places(n, q, c)
     return (
         tuple(sorted(*args)[slice(ii[0], ii[1] + 1, ii[1] - ii[0])]) if ii else None  # type: ignore
     )

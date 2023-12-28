@@ -23,7 +23,8 @@ def confidence_in_quantile_at_index(j: int, n: int, p: float) -> float:
 def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
     """Returns tuple of two indices (1 to n) such that quantile pp (0<pp<1) lies within
     these two indices of n sorted samples at confidence of at least c (0<c<1)
-    Return None if such a tuple cannot be computed.
+    Return None if such a tuple cannot be computed. If that happens, try to increase n,
+    reduce pp, or reduce c.
     """
     if pp <= 0 or pp >= 1:
         logger.error("Quantile has to be > 0 and < 1, found: %f", pp)
@@ -72,28 +73,34 @@ def quantile_interval_indices(n: int, pp: float, c: float) -> Optional[tuple[int
 
 
 def tolerance_interval_indices(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
-    
-    # We construct the tolerance interval by eliminating
-    # two half intervals at either ends of the sorted samples.
+    """ Returns tolerance interval indices. Out of n sorted samples, a fraction of t samples
+        are expected to be within these two indices, with a probability of at least c.
+        Returns None if indices cannot be calculated. If that happens, try to increase n,
+        reduce t, or reduce c.
+    """
+    # Construct the interval in two halves, each with t/2 fraction.
+    # At the high end, start at the median and expand until confidence exceeds c for
+    # quantile of 0.5 + t/2.
+    # At the low end, start at zero and keep incrementing the index until confidence
+    # exceeds 1-c for quantile of 0.5 - t/2.
+    median_index = (n+1)//2
+    j_hi = median_index
+    p_hi = 0.5 + t/2
+    while confidence_in_quantile_at_index(j_hi, n,p_hi) < c:
+        j_hi += 1
+        if j_hi == n+1:
+            logger.error("Not enough samples, %d, for tolerance %f at confidence %f. Need more.", n, t, c)
+            return None
+    # Now start at zero index and quantile of 0.5 - t/2
+    j_lo = 0
+    p_lo = 0.5 - t/2
+    while confidence_in_quantile_at_index(j_lo, n, p_lo) < 1-c:
+        j_lo += 1
+        if j_lo == median_index:
+            logger.error("Not enough samples, %d, for tolerance %f at confidence %f. Need more.", n, t, c)
+            return None   
 
-    pp = (1-t)/2 # Need half the budget quantile budget at either ends
-    # Suppose t > 0.5, then pp < 0.5. We will first find the index
-    # of samples at the lower end.
-    # Suppose t = 0.8, then pp = 0.1
-    ii1 = quantile_interval_indices(n, pp, c)
-    # Probability (sample at index j < sample at ii1[0]) >= c
-    # Thus, [0, ii1[0]] gives us the lower interval to eliminate
-
-    # Start at the higher interval, the budget is 1-pp now.
-    # From our example, 1-p = 0.9
-    ii2 = quantile_interval_indices(n, 1-pp, c)
-    # Probability (sample at index j > sample at ii2[1]) >= c
-    # Thus, [ii2[1], n] gives us the higher interval to eliminate
-
-    if ii1 is None or ii2 is None:
-        return None
-    return (min(ii1[0], ii2[0]), max(ii1[1], ii2[1]))
-
+    return (j_lo, j_hi)
 
 def _assurance_quantile_fn(x: float, k: int, n: int) -> float:
     """Function to find roots of x = confidence_in_quantile(n, f, x)"""

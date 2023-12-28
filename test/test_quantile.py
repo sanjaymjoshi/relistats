@@ -86,15 +86,13 @@ def test_tolerance_interval_indices() -> None:
     # for k in range(41, 53):
     #     print(f"{k} : {confidence_in_quantile_at_index(k, n=60, q=0.8)}")
 
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (3, 55)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (2, 56)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (3, 57)
-    assert tolerance_interval_indices(n=60, t=0.8, c=0.9) == (2, 58)
-    assert tolerance_interval_indices(n=60, t=0.85, c=0.85) == (2, 59)
-    assert tolerance_interval_indices(n=60, t=0.9, c=0.9) is None
-
-    assert tolerance_interval_indices(n=64, t=0.9, c=0.9) == (1, 64)
-    assert tolerance_interval_indices(n=161, t=0.95, c=0.95) == (1, 161)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.5) == (7, 55)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.7) == (6, 56)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.8) == (5, 57)
+    assert tolerance_interval_indices(n=60, t=0.8, c=0.9) == (4, 58)
+    assert tolerance_interval_indices(n=60, t=0.85, c=0.85) == (3, 59)
+    assert tolerance_interval_indices(n=60, t=0.9, c=0.9) == (2, 60)
+    assert tolerance_interval_indices(n=120, t=0.95, c=0.95) == (2, 120)
 
 
 def test_assurance_in_quantile() -> None:

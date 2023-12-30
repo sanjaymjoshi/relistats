@@ -214,3 +214,52 @@ def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
     return (
         tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
     )
+
+
+def _assurance_interval_fn(x: float, j_lo: int, j_hi: int, n: int) -> float:
+    """Function to find roots of x = confidence_in_quantile(n, f, x)"""
+    x_hi_hat = confidence_in_quantile(j_hi, n, x) or 0
+    x_lo_hat = confidence_in_quantile(j_lo, n, 1 - x) or 0
+    x_hat = min(x_hi_hat, 1 - x_lo_hat)
+    return x_hat - x
+
+
+def assurance_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[float]:
+    """Assurance level at j'th index out of n sorted samples. The confidence
+       is at least the quantile level.
+
+    :param j: sample index
+    :type j: int, >0
+    :param n: number of samples
+    :type n: int, >=0
+    :param tol: accuracy tolerance
+    :type tol: float, optional
+
+    :return: Assurance or None if it could not be computed
+    :rtype: float, optional
+    """
+    if _num_samples_invalid(n):
+        return None
+
+    if j_lo <= 0 or j_lo > n - 1 or j_hi <= 0 or j_hi > n - 1:
+        logger.error(
+            "Sample places %d, %d out of range, need to be between 0 and %d",
+            j_lo,
+            j_hi,
+            n - 1,
+        )
+        return None
+
+    if j_lo >= j_hi:
+        logger.error("Places %d >= %d not supported", j_lo, j_hi)
+        return None
+
+    # Use numerical optimization to find real root of the confidence equation
+    # c - confidence(n, f, r)
+    return opt.brentq(
+        _assurance_interval_fn,
+        a=0,  # Lowest possible value
+        b=1,  # Highest possible value
+        args=(j_lo, j_hi, n),
+        xtol=tol,
+    )

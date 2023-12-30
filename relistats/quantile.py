@@ -167,7 +167,7 @@ def assurance_in_quantile(j: int, n: int, tol=0.001) -> Optional[float]:
         return None
 
     # Use numerical optimization to find real root of the confidence equation
-    # c - confidence(n, f, r)
+    # x - confidence_in_quantile(j, n, x)
     return opt.brentq(
         _assurance_quantile_fn,
         a=0,  # Lowest possible value
@@ -224,12 +224,16 @@ def _assurance_interval_fn(x: float, j_lo: int, j_hi: int, n: int) -> float:
     return x_hat - x
 
 
-def assurance_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[float]:
-    """Assurance level at j'th index out of n sorted samples. The confidence
-       is at least the quantile level.
+def assurance_in_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[float]:
+    """Assurance level for interval [j_lo, j_hi] out of n sorted samples. Assurance
+    level of a means a% of samples will be within this interval with a% confidence.
+    Example: Out of 16 ordered samples, we can be 80% confident that 80% samples will
+    be between 1st and 15th place.
 
-    :param j: sample index
-    :type j: int, >0
+    :param j_lo: sample place at lower end
+    :type j_lo: int, >0
+    :param j_hi: sample place at upper end
+    :type j_hi: int, n > j_hi > j_lo
     :param n: number of samples
     :type n: int, >=0
     :param tol: accuracy tolerance
@@ -255,7 +259,7 @@ def assurance_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[floa
         return None
 
     # Use numerical optimization to find real root of the confidence equation
-    # c - confidence(n, f, r)
+    # x - _assurance_interval_fn(x, j_lo, j_hi, n)
     return opt.brentq(
         _assurance_interval_fn,
         a=0,  # Lowest possible value

@@ -1,8 +1,8 @@
 import pytest
 
 from relistats.quantile import (
+    assurance_in_interval,
     assurance_in_quantile,
-    assurance_interval,
     confidence_in_quantile,
     confidence_interval_of_median,
     confidence_interval_of_quantile,
@@ -167,6 +167,6 @@ def test_tolerance_interval() -> None:
 
 
 def test_assurance_interval() -> None:
-    assert assurance_interval(1, 15, 16) == pytest.approx(0.818, 0.001)
-    assert assurance_interval(1, 37, 38) == pytest.approx(0.901, 0.001)
-    assert assurance_interval(1, 93, 94) == pytest.approx(0.951, 0.001)
+    assert assurance_in_interval(1, 15, 16) == pytest.approx(0.818, 0.001)
+    assert assurance_in_interval(1, 37, 38) == pytest.approx(0.901, 0.001)
+    assert assurance_in_interval(1, 93, 94) == pytest.approx(0.951, 0.001)

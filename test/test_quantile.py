@@ -169,4 +169,9 @@ def test_tolerance_interval() -> None:
 def test_assurance_interval() -> None:
     assert assurance_in_interval(1, 15, 16) == pytest.approx(0.818, 0.001)
     assert assurance_in_interval(1, 37, 38) == pytest.approx(0.901, 0.001)
+    assert assurance_in_interval(9, 28, 38) == pytest.approx(0.686, 0.001)
+    assert assurance_in_interval(7, 30, 38) == pytest.approx(0.731, 0.001)
+    assert assurance_in_interval(5, 32, 38) == pytest.approx(0.777, 0.001)
+    assert assurance_in_interval(3, 34, 38) == pytest.approx(0.824, 0.001)
+    assert assurance_in_interval(2, 36, 38) == pytest.approx(0.874, 0.001)
     assert assurance_in_interval(1, 93, 94) == pytest.approx(0.951, 0.001)

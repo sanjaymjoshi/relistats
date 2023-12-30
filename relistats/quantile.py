@@ -1,3 +1,5 @@
+"""Statistical methods for quantiles.
+"""
 from math import ceil
 from typing import Any, Optional
 
@@ -193,6 +195,21 @@ def confidence_interval_of_quantile(
     """
     n = len(*args)
     ii = quantile_interval_places(n, q, c)
+    # Need to subtract 1 from the places, to account for 0-based index
+    return (
+        tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
+    )
+
+
+def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
+    """Returns tolerance interval for middle t (0<t<1) fraction of samples,
+    with confidence c (0<c<1), if possible.
+    Use this method if you data is not sorted already, else you can use tolerance_interval_places.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    n = len(*args)
+    ii = tolerance_interval_places(n, t, c)
     # Need to subtract 1 from the places, to account for 0-based index
     return (
         tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore

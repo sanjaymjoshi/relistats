@@ -6,6 +6,7 @@ from relistats.quantile import (
     confidence_interval_of_median,
     confidence_interval_of_quantile,
     quantile_interval_places,
+    tolerance_interval,
     tolerance_interval_places,
 )
 
@@ -146,4 +147,19 @@ def test_quantile_interval() -> None:
     assert confidence_interval_of_quantile(0.8, 0.8, arr_float) == (
         pytest.approx(5.2, abs=0.01),
         pytest.approx(6.1, abs=0.01),
+    )
+
+
+def test_tolerance_interval() -> None:
+    arr = range(10, 30)
+    assert tolerance_interval(0.75, 0.75, arr) == (11, 29)
+    assert tolerance_interval(0.75, 0.9, arr) == (11, 29)
+    assert tolerance_interval(0.5, 0.95, arr) == (12, 28)
+    assert tolerance_interval(0.8, 0.8, arr) == (11, 29)
+    assert tolerance_interval(0.9, 0.9, arr) is None
+
+    arr_float = [k * 0.1 for k in range(10, 70)]
+    assert tolerance_interval(0.8, 0.8, arr_float) == (
+        pytest.approx(1.4, abs=0.01),
+        pytest.approx(6.6, abs=0.01),
     )

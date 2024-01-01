@@ -37,8 +37,8 @@ def _confidence_invalid(c: float) -> bool:
 
 
 def _num_samples_invalid(n: int) -> bool:
-    n_min = 4
-    if n <= n_min:
+    n_min = 3
+    if n < n_min:
         logger.error("Need at least %d samples, found: %d", n_min, n)
         return True
     return False
@@ -60,12 +60,13 @@ def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int,
         return None
 
     k_hi = ceil(pp * n)
-    if k_hi >= n - 1:
+    if k_hi > n - 1:
         logger.error("Not enough samples, %d, for quantile %f. Need more.", n, pp)
         return None
 
+    lowest_conf = confidence_in_quantile(1, n, pp)
     c_hi = confidence_in_quantile(k_hi, n, pp)
-    while c_hi < c:
+    while c_hi < c + lowest_conf:
         k_hi += 1
         if k_hi == n + 1:
             logger.error("Highest confidence in %d samples %f < %f", k_hi - 1, c_hi, c)
@@ -74,7 +75,12 @@ def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int,
         c_hi = confidence_in_quantile(k_hi, n, pp)
 
     logger.debug(
-        "Found higher index %d at confidence %f for n=%d, q=%f, c=%f", k_hi, c_hi, n, pp
+        "Found higher index %d at confidence %f for n=%d, q=%f, c=%f",
+        k_hi,
+        c_hi,
+        n,
+        pp,
+        c,
     )
 
     k_lo = k_hi - 1

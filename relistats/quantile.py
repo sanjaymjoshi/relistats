@@ -44,6 +44,40 @@ def _num_samples_invalid(n: int) -> bool:
     return False
 
 
+def _quantile_interval_candidates(n: int, pp: float, c: float) -> list[tuple[int, int]]:
+    c_max = confidence_in_quantile(n, n, pp)
+    c_min = confidence_in_quantile(1, n, pp)
+    if c_max - c_min < c:
+        logger.info(
+            "Highest confidence %f < required %f, n=%d, pp=%f", c_max - c_min, c, n, pp
+        )
+        return []
+
+    # Start from mid-point and expand until first candidate for higher bound
+    j_hi = (n + 1) // 2
+    j_lo = 1
+    c_lo = c_min
+    while j_hi <= n:
+        c_hi = confidence_in_quantile(j_hi, n, pp)
+        if c_hi - c_lo > c:
+            break
+        j_hi += 1
+
+    rc: list[tuple[int, int]] = []
+    while j_hi <= n:
+        c_hi = confidence_in_quantile(j_hi, n, pp)
+        c_lo_temp = confidence_in_quantile(j_lo, n, pp)
+        while c_hi - c_lo_temp > c:
+            j_lo += 1
+            c_lo_temp = confidence_in_quantile(j_lo, n, pp)
+        # Now step back j_lo
+        j_lo -= 1
+        rc.append((j_lo, j_hi))
+        j_hi += 1
+
+    return rc
+
+
 def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
     """Returns tuple of two places (1..n) such that quantile pp (0<pp<1) lies within
     these two places of n sorted samples at confidence of at least c (0<c<1).

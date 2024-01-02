@@ -92,25 +92,25 @@ def test_confidence_interval_indices_in_quantile() -> None:
     assert quantile_interval_places(n=20, pp=0.5, c=0.95) == (6, 15)
 
     # The rest are regression tests
-    assert quantile_interval_places(n=60, pp=0.8, c=0.5) == (43, 49)
-    assert quantile_interval_places(n=60, pp=0.8, c=0.6) == (43, 50)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.5) == (45, 50)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.6) == (45, 51)
     assert quantile_interval_places(n=60, pp=0.8, c=0.7) == (44, 51)
-    assert quantile_interval_places(n=60, pp=0.8, c=0.8) == (43, 52)
+    assert quantile_interval_places(n=60, pp=0.8, c=0.8) == (45, 53)
     assert quantile_interval_places(n=60, pp=0.8, c=0.9) == (42, 53)
 
-    assert quantile_interval_places(n=60, pp=0.9, c=0.7) == (49, 56)
-    assert quantile_interval_places(n=60, pp=0.9, c=0.8) == (50, 57)
+    assert quantile_interval_places(n=60, pp=0.9, c=0.7) == (52, 57)
+    assert quantile_interval_places(n=60, pp=0.9, c=0.8) == (52, 58)
     assert quantile_interval_places(n=60, pp=0.9, c=0.9) == (50, 58)
     assert quantile_interval_places(n=60, pp=0.9, c=0.95) == (50, 59)
     assert quantile_interval_places(n=60, pp=0.95, c=0.95) == (52, 60)
 
     assert quantile_interval_places(n=60, pp=0.8, c=0.2) == (46, 48)
 
-    assert quantile_interval_places(n=60, pp=0.5, c=0.5) == (24, 31)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.7) == (23, 33)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.8) == (22, 34)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.9) == (22, 36)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.95) == (20, 37)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.5) == (26, 32)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.7) == (25, 34)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.8) == (24, 35)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.9) == (24, 37)
+    assert quantile_interval_places(n=60, pp=0.5, c=0.95) == (22, 38)
     assert quantile_interval_places(n=60, pp=0.5, c=0.99) == (20, 40)
 
 
@@ -140,14 +140,14 @@ def test_median_interval() -> None:
 
 def test_quantile_interval() -> None:
     arr = range(10, 30)
-    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (20, 26)
-    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (19, 27)
+    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (22, 27)
+    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (21, 28)
     assert confidence_interval_of_quantile(0.5, 0.95, arr) == (15, 24)
 
     arr_float = [k * 0.1 for k in range(10, 70)]
     assert confidence_interval_of_quantile(0.8, 0.8, arr_float) == (
-        pytest.approx(5.2, abs=0.01),
-        pytest.approx(6.1, abs=0.01),
+        pytest.approx(5.4, abs=0.01),
+        pytest.approx(6.2, abs=0.01),
     )
 
 

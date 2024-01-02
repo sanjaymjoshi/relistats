@@ -1,6 +1,5 @@
 """Statistical methods for quantiles.
 """
-from math import ceil
 from typing import Any, Optional
 
 import scipy.optimize as opt
@@ -93,44 +92,12 @@ def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int,
     if _quantile_invalid(pp) or _confidence_invalid(c) or _num_samples_invalid(n):
         return None
 
-    k_hi = ceil(pp * n)
-    if k_hi > n - 1:
-        logger.error("Not enough samples, %d, for quantile %f. Need more.", n, pp)
+    candidates = _quantile_interval_candidates(n, pp, c)
+    if len(candidates) == 0:
         return None
-
-    lowest_conf = confidence_in_quantile(1, n, pp)
-    c_hi = confidence_in_quantile(k_hi, n, pp)
-    while c_hi < c + lowest_conf:
-        k_hi += 1
-        if k_hi == n + 1:
-            logger.error("Highest confidence in %d samples %f < %f", k_hi - 1, c_hi, c)
-            return None
-
-        c_hi = confidence_in_quantile(k_hi, n, pp)
-
-    logger.debug(
-        "Found higher index %d at confidence %f for n=%d, q=%f, c=%f",
-        k_hi,
-        c_hi,
-        n,
-        pp,
-        c,
-    )
-
-    k_lo = k_hi - 1
-    c_lo = confidence_in_quantile(k_lo, n, pp)
-    while c_hi - c_lo < c:
-        k_lo = k_lo - 1
-        if k_lo == 0:
-            logger.error(
-                "Lower bound of interval needs to be > 0. Upper bound %d at confidence %f:.2",
-                k_hi,
-                c_hi,
-            )
-            return None
-        c_lo = confidence_in_quantile(k_lo, n, pp)
-
-    return (k_lo, k_hi)
+    interval_sizes = [x[1] - x[0] for x in candidates]
+    min_id = interval_sizes.index(min(interval_sizes))
+    return candidates[min_id]
 
 
 def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int, int]]:

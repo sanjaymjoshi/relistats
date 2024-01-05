@@ -9,6 +9,7 @@ matplotlib = "*"
 scipy = "*"
 pexpect = "*"
 relistats = {editable = true, path = "./.."}
+seaborn = "*"
 
 [dev-packages]
 black = "*"

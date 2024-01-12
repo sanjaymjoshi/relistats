@@ -144,6 +144,15 @@ def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int,
     return (j_lo, j_hi)
 
 
+def assurance_interval_places(n: int, a: float) -> Optional[tuple[int, int]]:
+    """Returns assurance interval places. Out of n sorted samples, a fraction of a samples
+    are expected to be within these two places, with a probability of at least a.
+    Returns None if such tuple cannot be calculated. If that happens, try to increase n
+    or reduce a.
+    """
+    return tolerance_interval_places(n, a, a)
+
+
 def _assurance_quantile_fn(x: float, j: int, n: int) -> float:
     """Function to find roots of x = confidence_in_quantile(n, f, x)"""
     x_hat = confidence_in_quantile(j, n, x) or 0

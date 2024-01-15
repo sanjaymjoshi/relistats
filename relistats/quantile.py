@@ -128,9 +128,27 @@ def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int,
             )
             return None
     # Now start at zero index and quantile of 0.5 - t/2
+    # c_hi * (1-c_lo) >= c
+    # c_lo <=  1 - c / c_hi
+    c_hi = confidence_in_quantile(j_hi, n, p_hi)
+    logger.debug(
+        "p_hi = %f, j_hi = %d, c_hi = %f, c_lo < %f", p_hi, j_hi, c_hi, 1 - c / c_hi
+    )
     j_lo = 0
     p_lo = 0.5 - t / 2
-    while confidence_in_quantile(j_lo, n, p_lo) < 1 - c:
+    logger.debug(
+        "p_lo = %f, j_lo = %d, c_lo = %f",
+        p_lo,
+        j_lo,
+        confidence_in_quantile(j_lo, n, p_lo),
+    )
+    while confidence_in_quantile(j_lo, n, p_lo) < 1 - c / c_hi:
+        logger.debug(
+            "p_lo = %f, j_lo = %d, c_lo = %f",
+            p_lo,
+            j_lo,
+            confidence_in_quantile(j_lo, n, p_lo),
+        )
         j_lo += 1
         if j_lo == median_index:
             logger.error(
@@ -141,7 +159,7 @@ def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int,
             )
             return None
 
-    return (j_lo, j_hi)
+    return (j_lo + 1, j_hi)
 
 
 def assurance_interval_places(n: int, a: float) -> Optional[tuple[int, int]]:

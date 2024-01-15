@@ -115,12 +115,12 @@ def test_confidence_interval_indices_in_quantile() -> None:
 
 
 def test_tolerance_interval_indices() -> None:
-    assert tolerance_interval_places(n=60, t=0.8, c=0.5) == (7, 55)
-    assert tolerance_interval_places(n=60, t=0.8, c=0.7) == (6, 56)
+    assert tolerance_interval_places(n=60, t=0.8, c=0.5) == (5, 55)
+    assert tolerance_interval_places(n=60, t=0.8, c=0.7) == (4, 56)
     assert tolerance_interval_places(n=60, t=0.8, c=0.8) == (5, 57)
     assert tolerance_interval_places(n=60, t=0.8, c=0.9) == (4, 58)
-    assert tolerance_interval_places(n=60, t=0.85, c=0.85) == (3, 59)
-    assert tolerance_interval_places(n=60, t=0.9, c=0.9) == (2, 60)
+    assert tolerance_interval_places(n=60, t=0.85, c=0.85) == (4, 59)
+    assert tolerance_interval_places(n=60, t=0.9, c=0.9) == (3, 60)
     assert tolerance_interval_places(n=120, t=0.95, c=0.95) == (2, 120)
 
 
@@ -153,9 +153,9 @@ def test_quantile_interval() -> None:
 
 def test_tolerance_interval() -> None:
     arr = range(10, 30)
-    assert tolerance_interval(0.75, 0.75, arr) == (11, 29)
+    assert tolerance_interval(0.75, 0.75, arr) == (12, 29)
     assert tolerance_interval(0.75, 0.9, arr) == (11, 29)
-    assert tolerance_interval(0.5, 0.95, arr) == (12, 28)
+    assert tolerance_interval(0.5, 0.95, arr) == (13, 28)
     assert tolerance_interval(0.8, 0.8, arr) == (11, 29)
     assert tolerance_interval(0.9, 0.9, arr) is None
 

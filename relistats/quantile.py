@@ -1,4 +1,4 @@
-"""Statistical methods for quantiles.
+"""Statistical methods for quantiles and tolerance interval
 """
 from typing import Any, Optional
 
@@ -9,14 +9,16 @@ from relistats import logger
 
 
 def confidence_in_quantile(j: int, n: int, p: float) -> float:
-    """Confidence (probability) that in sorted samples of size n,
-    p^th quantile (0 < p < 1) is greater than the sample
-    at j'th place out of n, 1 <= j <= n
+    """Returns confidence (probability) that in a population of n samples,
+    p^th quantile (0 < p < 1) is greater than j samples, 1 <= j <= n.
+
     From https://online.stat.psu.edu/stat415/lesson/19/19.2
     c = sum_{k=0}^{j-1} nCk * p^k * (1-p)^(n-k)
+
     This is same as cumulative density function for a binomial
     distribution, evaluated at j-1 out of n samples.
-    Note that using j=n+1 will return 1.
+
+    Note that j=n+1 will return 1.
     """
     return stats.binom.cdf(j - 1, n, p)
 
@@ -44,6 +46,11 @@ def _num_samples_invalid(n: int) -> bool:
 
 
 def _quantile_interval_candidates(n: int, pp: float, c: float) -> list[tuple[int, int]]:
+    """Returns list of tuples of two indices, out of n, that meet requirement that quantile pp,
+    0 < pp < 1 lies within these two indices with confidence >= c, 0 < c < 1.
+
+    Returns empty list if none found.
+    """
     c_max = confidence_in_quantile(n, n, pp)
     c_min = confidence_in_quantile(1, n, pp)
     if c_max - c_min < c:
@@ -59,6 +66,13 @@ def _quantile_interval_candidates(n: int, pp: float, c: float) -> list[tuple[int
     while j_hi <= n:
         c_hi = confidence_in_quantile(j_hi, n, pp)
         if c_hi - c_lo > c:
+            logger.debug(
+                "First candidate found, j_hi=%d, c_hi=%f - c_lo=%f > c=%f",
+                j_hi,
+                c_hi,
+                c_lo,
+                c,
+            )
             break
         j_hi += 1
 
@@ -71,6 +85,13 @@ def _quantile_interval_candidates(n: int, pp: float, c: float) -> list[tuple[int
             c_lo_temp = confidence_in_quantile(j_lo, n, pp)
         # Now step back j_lo
         j_lo -= 1
+        logger.debug(
+            "List candidate found, j_lo=%d, c_hi=%f - c_lo=%f > c=%f",
+            j_lo,
+            c_hi,
+            c_lo_temp,
+            c,
+        )
         rc.append((j_lo, j_hi))
         j_hi += 1
 
@@ -78,8 +99,8 @@ def _quantile_interval_candidates(n: int, pp: float, c: float) -> list[tuple[int
 
 
 def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tuple of two places (1..n) such that quantile pp (0<pp<1) lies within
-    these two places of n sorted samples at confidence of at least c (0<c<1).
+    """Returns tuple of two places (1..n) such that quantile pp (0 < pp < 1) lies within
+    these two places of n sorted samples with confidence of at least c (0 < c < 1).
 
     Note that the places are not indexed at zero!
 
@@ -102,18 +123,24 @@ def quantile_interval_places(n: int, pp: float, c: float) -> Optional[tuple[int,
 
 def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
     """Returns tolerance interval places. Out of n sorted samples, a fraction of t samples
-    are expected to be within these two places, with a probability of at least c.
+    (0 < t < 1) are expected to be within these two places, with a probability of at least c,
+    0 < c < 1.
+
     Returns None if such tuple cannot be calculated. If that happens, try to increase n,
     reduce t, or reduce c.
     """
-    # Construct the interval in two halves, each with t/2 fraction.
-    # At the high end, start at the median and expand until confidence exceeds c for
-    # quantile of 0.5 + t/2.
-    # At the low end, start at zero and keep incrementing the index until confidence
-    # exceeds 1-c for quantile of 0.5 - t/2.
     if _quantile_invalid(t) or _confidence_invalid(c) or _num_samples_invalid(n):
         return None
 
+    # Construct the interval (g, h) in two halves, each with t/2 fraction around median.
+    # Let c_hi = probability that h out of n samples are smaller than quantile (0.5+t/2)
+    # Let c_lo = probability that g out of n samples are smaller than quantile (0.5-t/2)
+    # 1 - c_lo = probability that g out of n samples are higher than quantile (0.5-t/2)
+    # Then c_hi*(1 - c_lo) = probability that between (g, h) samples out of n are
+    # within quantile t
+
+    # At the high end, start at the median and expand until confidence exceeds c for
+    # quantile of 0.5 + t/2.
     median_index = (n + 1) // 2
     j_hi = median_index
     p_hi = 0.5 + t / 2
@@ -121,19 +148,20 @@ def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int,
         j_hi += 1
         if j_hi == n + 1:
             logger.error(
-                "Not enough samples, %d, for tolerance %f at confidence %f. Need more.",
+                "Not enough samples, %d, for tolerance %f at confidence %f.",
                 n,
                 t,
                 c,
             )
             return None
-    # Now start at zero index and quantile of 0.5 - t/2
-    # c_hi * (1-c_lo) >= c
-    # c_lo <=  1 - c / c_hi
     c_hi = confidence_in_quantile(j_hi, n, p_hi)
     logger.debug(
         "p_hi = %f, j_hi = %d, c_hi = %f, c_lo < %f", p_hi, j_hi, c_hi, 1 - c / c_hi
     )
+
+    # Now start at zero index and quantile of 0.5 - t/2
+    # c_hi * (1 - c_lo) >= c
+    # c_lo <=  1 - c / c_hi
     j_lo = 0
     p_lo = 0.5 - t / 2
     logger.debug(
@@ -165,6 +193,7 @@ def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int,
 def assurance_interval_places(n: int, a: float) -> Optional[tuple[int, int]]:
     """Returns assurance interval places. Out of n sorted samples, a fraction of a samples
     are expected to be within these two places, with a probability of at least a.
+
     Returns None if such tuple cannot be calculated. If that happens, try to increase n
     or reduce a.
     """

@@ -1,19 +1,19 @@
 import pytest
 
-from relistats.quantile import (
+from relistats.percentile import (
     assurance_in_interval,
-    assurance_in_quantile,
-    confidence_in_quantile,
+    assurance_in_percentile,
+    confidence_in_percentile,
     confidence_interval_of_median,
-    confidence_interval_of_quantile,
-    quantile_interval_places,
+    confidence_interval_of_percentile,
+    percentile_interval_places,
     tolerance_interval,
     tolerance_interval_places,
 )
 
 
 def confidence_from_textbook_example(n, i, j, p) -> float:
-    return confidence_in_quantile(j, n, p) - confidence_in_quantile(i, n, p)
+    return confidence_in_percentile(j, n, p) - confidence_in_percentile(i, n, p)
 
 
 # Textbook Reference: https://online.stat.psu.edu/stat415/lesson/19/19.1
@@ -72,11 +72,11 @@ def test_textbook_examples() -> None:
 
 
 def test_confidence_in_quantile_at_index() -> None:
-    assert confidence_in_quantile(14, 20, 0.5) == pytest.approx(0.942, abs=0.001)
-    assert confidence_in_quantile(19, 20, 0.95) == pytest.approx(0.264, abs=0.001)
-    assert confidence_in_quantile(19, 20, 0.9) == pytest.approx(0.608, abs=0.001)
-    assert confidence_in_quantile(19, 20, 0.85) == pytest.approx(0.824, abs=0.001)
-    assert confidence_in_quantile(1, 20, 0.05) == pytest.approx(0.358, abs=0.01)
+    assert confidence_in_percentile(14, 20, 0.5) == pytest.approx(0.942, abs=0.001)
+    assert confidence_in_percentile(19, 20, 0.95) == pytest.approx(0.264, abs=0.001)
+    assert confidence_in_percentile(19, 20, 0.9) == pytest.approx(0.608, abs=0.001)
+    assert confidence_in_percentile(19, 20, 0.85) == pytest.approx(0.824, abs=0.001)
+    assert confidence_in_percentile(1, 20, 0.05) == pytest.approx(0.358, abs=0.01)
 
 
 def test_confidence_interval_indices_in_quantile() -> None:
@@ -84,34 +84,34 @@ def test_confidence_interval_indices_in_quantile() -> None:
     # The confidence numbers are set to two decimal places to see if the
     # same interval as in the textbook is returned for a few samples
     # from the table
-    assert quantile_interval_places(n=5, pp=0.5, c=0.93) == (1, 5)
-    assert quantile_interval_places(n=8, pp=0.5, c=0.92) == (2, 7)
-    assert quantile_interval_places(n=11, pp=0.5, c=0.93) == (3, 9)
-    assert quantile_interval_places(n=14, pp=0.5, c=0.94) == (4, 11)
-    assert quantile_interval_places(n=17, pp=0.5, c=0.95) == (5, 13)
-    assert quantile_interval_places(n=20, pp=0.5, c=0.95) == (6, 15)
+    assert percentile_interval_places(n=5, p=0.5, c=0.93) == (1, 5)
+    assert percentile_interval_places(n=8, p=0.5, c=0.92) == (2, 7)
+    assert percentile_interval_places(n=11, p=0.5, c=0.93) == (3, 9)
+    assert percentile_interval_places(n=14, p=0.5, c=0.94) == (4, 11)
+    assert percentile_interval_places(n=17, p=0.5, c=0.95) == (5, 13)
+    assert percentile_interval_places(n=20, p=0.5, c=0.95) == (6, 15)
 
     # The rest are regression tests
-    assert quantile_interval_places(n=60, pp=0.8, c=0.5) == (45, 50)
-    assert quantile_interval_places(n=60, pp=0.8, c=0.6) == (45, 51)
-    assert quantile_interval_places(n=60, pp=0.8, c=0.7) == (44, 51)
-    assert quantile_interval_places(n=60, pp=0.8, c=0.8) == (45, 53)
-    assert quantile_interval_places(n=60, pp=0.8, c=0.9) == (42, 53)
+    assert percentile_interval_places(n=60, p=0.8, c=0.5) == (45, 50)
+    assert percentile_interval_places(n=60, p=0.8, c=0.6) == (45, 51)
+    assert percentile_interval_places(n=60, p=0.8, c=0.7) == (44, 51)
+    assert percentile_interval_places(n=60, p=0.8, c=0.8) == (45, 53)
+    assert percentile_interval_places(n=60, p=0.8, c=0.9) == (42, 53)
 
-    assert quantile_interval_places(n=60, pp=0.9, c=0.7) == (52, 57)
-    assert quantile_interval_places(n=60, pp=0.9, c=0.8) == (52, 58)
-    assert quantile_interval_places(n=60, pp=0.9, c=0.9) == (50, 58)
-    assert quantile_interval_places(n=60, pp=0.9, c=0.95) == (50, 59)
-    assert quantile_interval_places(n=60, pp=0.95, c=0.95) == (52, 60)
+    assert percentile_interval_places(n=60, p=0.9, c=0.7) == (52, 57)
+    assert percentile_interval_places(n=60, p=0.9, c=0.8) == (52, 58)
+    assert percentile_interval_places(n=60, p=0.9, c=0.9) == (50, 58)
+    assert percentile_interval_places(n=60, p=0.9, c=0.95) == (50, 59)
+    assert percentile_interval_places(n=60, p=0.95, c=0.95) == (52, 60)
 
-    assert quantile_interval_places(n=60, pp=0.8, c=0.2) == (46, 48)
+    assert percentile_interval_places(n=60, p=0.8, c=0.2) == (46, 48)
 
-    assert quantile_interval_places(n=60, pp=0.5, c=0.5) == (26, 32)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.7) == (25, 34)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.8) == (24, 35)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.9) == (24, 37)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.95) == (22, 38)
-    assert quantile_interval_places(n=60, pp=0.5, c=0.99) == (20, 40)
+    assert percentile_interval_places(n=60, p=0.5, c=0.5) == (26, 32)
+    assert percentile_interval_places(n=60, p=0.5, c=0.7) == (25, 34)
+    assert percentile_interval_places(n=60, p=0.5, c=0.8) == (24, 35)
+    assert percentile_interval_places(n=60, p=0.5, c=0.9) == (24, 37)
+    assert percentile_interval_places(n=60, p=0.5, c=0.95) == (22, 38)
+    assert percentile_interval_places(n=60, p=0.5, c=0.99) == (20, 40)
 
 
 def test_tolerance_interval_indices() -> None:
@@ -125,7 +125,7 @@ def test_tolerance_interval_indices() -> None:
 
 
 def test_assurance_in_quantile() -> None:
-    assert assurance_in_quantile(14, 20) == pytest.approx(0.635, abs=0.001)
+    assert assurance_in_percentile(14, 20) == pytest.approx(0.635, abs=0.001)
 
 
 def test_median_interval() -> None:
@@ -140,12 +140,12 @@ def test_median_interval() -> None:
 
 def test_quantile_interval() -> None:
     arr = range(10, 30)
-    assert confidence_interval_of_quantile(0.75, 0.75, arr) == (22, 27)
-    assert confidence_interval_of_quantile(0.75, 0.9, arr) == (21, 28)
-    assert confidence_interval_of_quantile(0.5, 0.95, arr) == (15, 24)
+    assert confidence_interval_of_percentile(0.75, 0.75, arr) == (22, 27)
+    assert confidence_interval_of_percentile(0.75, 0.9, arr) == (21, 28)
+    assert confidence_interval_of_percentile(0.5, 0.95, arr) == (15, 24)
 
     arr_float = [k * 0.1 for k in range(10, 70)]
-    assert confidence_interval_of_quantile(0.8, 0.8, arr_float) == (
+    assert confidence_interval_of_percentile(0.8, 0.8, arr_float) == (
         pytest.approx(5.4, abs=0.01),
         pytest.approx(6.2, abs=0.01),
     )

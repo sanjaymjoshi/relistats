@@ -22,11 +22,11 @@ def _confidence_invalid(c: float) -> bool:
     return False
 
 
-def _percentile_interval_candidates(
+def _percentile_interval_locs_candidates(
     n: int, p: float, c: float
 ) -> list[tuple[int, int]]:
-    """Returns list of tuples of two indices, out of n, that meet requirement that
-       percentile/quantile p, 0 < p < 1 lies within these two indices with
+    """Returns list of tuples of two locations, (1..n), that meet requirement that
+       percentile/quantile p, 0 < p < 1 lies within these two locations with
        confidence >= c, 0 < c < 1.
 
     Returns empty list if none found.
@@ -78,23 +78,23 @@ def _percentile_interval_candidates(
     return rc
 
 
-def percentile_interval_places(n: int, p: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tuple of two places (1..n) such that percentile/quantile p
-    (0 < p < 1) lies within these two places of n sorted samples with confidence
+def percentile_interval_locs(n: int, p: float, c: float) -> Optional[tuple[int, int]]:
+    """Returns tuple of two locations (1..n) such that percentile/quantile p
+    (0 < p < 1) lies within these two locations of n sorted samples with confidence
     of at least c (0 < c < 1).
 
-    Note that the places are not indexed at zero!
+    Note that the locations are indexed at 1 and not zero!
 
     Use this method if you plan to sort samples yourself, else you can use
     confidence_interval_of_quantile method.
 
     Return None if such a tuple cannot be computed. If that happens, try to increase n,
-    reduce pp, or reduce c.
+    reduce p, or reduce c.
     """
     if _percentile_invalid(p) or _confidence_invalid(c) or _num_samples_invalid(n):
         return None
 
-    candidates = _percentile_interval_candidates(n, p, c)
+    candidates = _percentile_interval_locs_candidates(n, p, c)
     if len(candidates) == 0:
         return None
     interval_sizes = [x[1] - x[0] for x in candidates]
@@ -102,8 +102,8 @@ def percentile_interval_places(n: int, p: float, c: float) -> Optional[tuple[int
     return candidates[min_id]
 
 
-def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tolerance interval places. Out of n sorted samples, a fraction of t samples
+def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
+    """Returns tolerance interval locations. Out of n sorted samples, a fraction of t samples
     (0 < t < 1) are expected to be within these two places, with a probability of at least c,
     0 < c < 1.
 
@@ -171,14 +171,14 @@ def tolerance_interval_places(n: int, t: float, c: float) -> Optional[tuple[int,
     return (j_lo + 1, j_hi)
 
 
-def assurance_interval_places(n: int, a: float) -> Optional[tuple[int, int]]:
-    """Returns assurance interval places. Out of n sorted samples, a fraction of a samples
-    are expected to be within these two places, with a probability of at least a.
+def assurance_interval_locs(n: int, a: float) -> Optional[tuple[int, int]]:
+    """Returns assurance interval locations. Out of n sorted samples, a fraction of a samples
+    are expected to be within these two locations, with a probability of at least a.
 
     Returns None if such tuple cannot be calculated. If that happens, try to increase n
     or reduce a.
     """
-    return tolerance_interval_places(n, a, a)
+    return tolerance_interval_locs(n, a, a)
 
 
 def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
@@ -198,7 +198,7 @@ def confidence_interval_of_percentile(
     args is any iterable (list, tuple, set)
     """
     n = len(*args)
-    ii = percentile_interval_places(n, p, c)
+    ii = percentile_interval_locs(n, p, c)
     # Need to subtract 1 from the places, to account for 0-based index
     return (
         tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
@@ -213,7 +213,7 @@ def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
     args is any iterable (list, tuple, set)
     """
     n = len(*args)
-    ii = tolerance_interval_places(n, t, c)
+    ii = tolerance_interval_locs(n, t, c)
     # Need to subtract 1 from the places, to account for 0-based index
     return (
         tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore

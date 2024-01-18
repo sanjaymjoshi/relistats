@@ -23,20 +23,6 @@ def confidence_in_percentile(j: int, n: int, p: float) -> float:
     return stats.binom.cdf(j - 1, n, p)
 
 
-def _percentile_invalid(p: float) -> bool:
-    if p <= 0 or p >= 1:
-        logger.error("Quantile has to be > 0 and < 1, found: %f", p)
-        return True
-    return False
-
-
-def _confidence_invalid(c: float) -> bool:
-    if c <= 0 or c >= 1:
-        logger.error("Confidence c has to be > 0 and < 1, found: %f", c)
-        return True
-    return False
-
-
 def _num_samples_invalid(n: int) -> bool:
     n_min = 3
     if n < n_min:

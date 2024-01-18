@@ -5,12 +5,21 @@ from typing import Any, Optional
 import scipy.optimize as opt
 
 from relistats import logger
-from relistats.percentile import (
-    _confidence_invalid,
-    _num_samples_invalid,
-    _percentile_invalid,
-    confidence_in_percentile,
-)
+from relistats.percentile import _num_samples_invalid, confidence_in_percentile
+
+
+def _percentile_invalid(p: float) -> bool:
+    if p <= 0 or p >= 1:
+        logger.error("Percentile/quantile has to be > 0 and < 1, found: %f", p)
+        return True
+    return False
+
+
+def _confidence_invalid(c: float) -> bool:
+    if c <= 0 or c >= 1:
+        logger.error("Confidence has to be > 0 and < 1, found: %f", c)
+        return True
+    return False
 
 
 def _percentile_interval_candidates(

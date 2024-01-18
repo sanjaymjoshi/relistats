@@ -2,12 +2,22 @@ import pytest
 
 from relistats.intervals import (
     assurance_in_interval,
+    confidence_interval_of_mean,
     confidence_interval_of_median,
     confidence_interval_of_percentile,
     percentile_interval_locs,
     tolerance_interval,
     tolerance_interval_locs,
 )
+
+
+def test_confidence_interval_of_mean() -> None:
+    a = range(100)
+    ci = confidence_interval_of_mean(0.95, a)
+    print(ci)
+    assert confidence_interval_of_mean(0.95, a) == pytest.approx(
+        [43.81, 55.19], abs=0.01
+    )
 
 
 def test_confidence_interval_indices_in_quantile() -> None:

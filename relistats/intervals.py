@@ -3,9 +3,16 @@
 from typing import Any, Optional
 
 import scipy.optimize as opt
+import scipy.stats as stats
 
 from relistats import logger
 from relistats.percentile import _num_samples_invalid, confidence_in_percentile
+
+
+def confidence_interval_of_mean(c: float, *args) -> tuple[Any, Any]:
+    """Returns confidence interval of mean from args at confidence of c, 0 < c < 1"""
+    mean, sem = stats.tmean(*args), stats.sem(*args)
+    return stats.norm.interval(c, loc=mean, scale=sem)
 
 
 def _percentile_invalid(p: float) -> bool:

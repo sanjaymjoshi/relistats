@@ -15,6 +15,54 @@ def confidence_interval_of_mean(c: float, *args) -> tuple[Any, Any]:
     return stats.norm.interval(c, loc=mean, scale=sem)
 
 
+def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
+    """Returns median interval from args at confidence of at least c, if possible.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    return confidence_interval_of_percentile(0.5, c, *args)
+
+
+def confidence_interval_of_percentile(
+    p: float, c: float, *args
+) -> Optional[tuple[Any, Any]]:
+    """Returns p'th percentile/quantile interval from args at confidence of at least c, if possible.
+    Use this method if you data is not sorted already, else you can use quantile_interval_places.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    n = len(*args)
+    ii = percentile_interval_locs(n, p, c)
+    # Need to subtract 1 from the places, to account for 0-based index
+    return (
+        tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
+    )
+
+
+def percentile_interval_locs(n: int, p: float, c: float) -> Optional[tuple[int, int]]:
+    """Returns tuple of two locations (1..n) such that percentile/quantile p
+    (0 < p < 1) lies within these two locations of n sorted samples with confidence
+    of at least c (0 < c < 1).
+
+    Note that the locations are indexed at 1 and not zero!
+
+    Use this method if you plan to sort samples yourself, else you can use
+    confidence_interval_of_quantile method.
+
+    Return None if such a tuple cannot be computed. If that happens, try to increase n,
+    reduce p, or reduce c.
+    """
+    if _percentile_invalid(p) or _confidence_invalid(c) or _num_samples_invalid(n):
+        return None
+
+    candidates = _percentile_interval_locs_candidates(n, p, c)
+    if len(candidates) == 0:
+        return None
+    interval_sizes = [x[1] - x[0] for x in candidates]
+    min_id = interval_sizes.index(min(interval_sizes))
+    return candidates[min_id]
+
+
 def _percentile_invalid(p: float) -> bool:
     if p <= 0 or p >= 1:
         logger.error("Percentile/quantile has to be > 0 and < 1, found: %f", p)
@@ -41,9 +89,7 @@ def _percentile_interval_locs_candidates(
     c_max = confidence_in_percentile(n, n, p)
     c_min = confidence_in_percentile(1, n, p)
     if c_max - c_min < c:
-        logger.info(
-            "Highest confidence %f < required %f, n=%d, pp=%f", c_max - c_min, c, n, p
-        )
+        logger.info("Confidence %f < required %f, n=%d, p=%f", c_max - c_min, c, n, p)
         return []
 
     # Start from mid-point and expand until first candidate for higher bound
@@ -54,11 +100,7 @@ def _percentile_interval_locs_candidates(
         c_hi = confidence_in_percentile(j_hi, n, p)
         if c_hi - c_lo > c:
             logger.debug(
-                "First candidate found, j_hi=%d, c_hi=%f - c_lo=%f > c=%f",
-                j_hi,
-                c_hi,
-                c_lo,
-                c,
+                "Candidate: j_hi=%d, c_hi=%f - c_lo=%f > c=%f", j_hi, c_hi, c_lo, c
             )
             break
         j_hi += 1
@@ -73,11 +115,7 @@ def _percentile_interval_locs_candidates(
         # Now step back j_lo
         j_lo -= 1
         logger.debug(
-            "List candidate found, j_lo=%d, c_hi=%f - c_lo=%f > c=%f",
-            j_lo,
-            c_hi,
-            c_lo_temp,
-            c,
+            "Candidate: j_lo=%d, c_hi=%f - c_lo=%f > c=%f", j_lo, c_hi, c_lo_temp, c
         )
         rc.append((j_lo, j_hi))
         j_hi += 1
@@ -85,28 +123,19 @@ def _percentile_interval_locs_candidates(
     return rc
 
 
-def percentile_interval_locs(n: int, p: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tuple of two locations (1..n) such that percentile/quantile p
-    (0 < p < 1) lies within these two locations of n sorted samples with confidence
-    of at least c (0 < c < 1).
-
-    Note that the locations are indexed at 1 and not zero!
-
-    Use this method if you plan to sort samples yourself, else you can use
-    confidence_interval_of_quantile method.
-
-    Return None if such a tuple cannot be computed. If that happens, try to increase n,
-    reduce p, or reduce c.
+def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
+    """Returns tolerance interval for middle t (0<t<1) fraction of samples,
+    with confidence c (0<c<1), if possible.
+    Use this method if you data is not sorted already, else you can use tolerance_interval_places.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
     """
-    if _percentile_invalid(p) or _confidence_invalid(c) or _num_samples_invalid(n):
-        return None
-
-    candidates = _percentile_interval_locs_candidates(n, p, c)
-    if len(candidates) == 0:
-        return None
-    interval_sizes = [x[1] - x[0] for x in candidates]
-    min_id = interval_sizes.index(min(interval_sizes))
-    return candidates[min_id]
+    n = len(*args)
+    ii = tolerance_interval_locs(n, t, c)
+    # Need to subtract 1 from the places, to account for 0-based index
+    return (
+        tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
+    )
 
 
 def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
@@ -136,10 +165,7 @@ def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, i
         j_hi += 1
         if j_hi == n + 1:
             logger.error(
-                "Not enough samples, %d, for tolerance %f at confidence %f.",
-                n,
-                t,
-                c,
+                "Not enough samples, %d, for tolerance %f at confidence %f.", n, t, c
             )
             return None
     c_hi = confidence_in_percentile(j_hi, n, p_hi)
@@ -152,26 +178,14 @@ def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, i
     # c_lo <=  1 - c / c_hi
     j_lo = 0
     p_lo = 0.5 - t / 2
-    logger.debug(
-        "p_lo = %f, j_lo = %d, c_lo = %f",
-        p_lo,
-        j_lo,
-        confidence_in_percentile(j_lo, n, p_lo),
-    )
-    while confidence_in_percentile(j_lo, n, p_lo) < 1 - c / c_hi:
-        logger.debug(
-            "p_lo = %f, j_lo = %d, c_lo = %f",
-            p_lo,
-            j_lo,
-            confidence_in_percentile(j_lo, n, p_lo),
-        )
+    c_lo = confidence_in_percentile(j_lo, n, p_lo)
+    logger.debug("p_lo = %f, j_lo = %d, c_lo = %f", p_lo, j_lo, c_lo)
+    while c_lo := confidence_in_percentile(j_lo, n, p_lo) < 1 - c / c_hi:
+        logger.debug("p_lo = %f, j_lo = %d, c_lo = %f", p_lo, j_lo, c_lo)
         j_lo += 1
         if j_lo == median_index:
             logger.error(
-                "Not enough samples, %d, for tolerance %f at confidence %f. Need more.",
-                n,
-                t,
-                c,
+                "Not enough samples, %d, for tolerance %f, confidence %f", n, t, c
             )
             return None
 
@@ -186,45 +200,6 @@ def assurance_interval_locs(n: int, a: float) -> Optional[tuple[int, int]]:
     or reduce a.
     """
     return tolerance_interval_locs(n, a, a)
-
-
-def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
-    """Returns median interval from args at confidence of at least c, if possible.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
-    """
-    return confidence_interval_of_percentile(0.5, c, *args)
-
-
-def confidence_interval_of_percentile(
-    p: float, c: float, *args
-) -> Optional[tuple[Any, Any]]:
-    """Returns p'th percentile/quantile interval from args at confidence of at least c, if possible.
-    Use this method if you data is not sorted already, else you can use quantile_interval_places.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
-    """
-    n = len(*args)
-    ii = percentile_interval_locs(n, p, c)
-    # Need to subtract 1 from the places, to account for 0-based index
-    return (
-        tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
-    )
-
-
-def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
-    """Returns tolerance interval for middle t (0<t<1) fraction of samples,
-    with confidence c (0<c<1), if possible.
-    Use this method if you data is not sorted already, else you can use tolerance_interval_places.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
-    """
-    n = len(*args)
-    ii = tolerance_interval_locs(n, t, c)
-    # Need to subtract 1 from the places, to account for 0-based index
-    return (
-        tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
-    )
 
 
 def _assurance_interval_fn(x: float, j_lo: int, j_hi: int, n: int) -> float:
@@ -257,12 +232,7 @@ def assurance_in_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[f
         return None
 
     if j_lo <= 0 or j_lo > n - 1 or j_hi <= 0 or j_hi > n - 1:
-        logger.error(
-            "Sample places %d, %d out of range, need to be between 0 and %d",
-            j_lo,
-            j_hi,
-            n - 1,
-        )
+        logger.error("Sample places %d, %d not between 0 and %d", j_lo, j_hi, n - 1)
         return None
 
     if j_lo >= j_hi:

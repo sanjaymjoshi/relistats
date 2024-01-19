@@ -192,6 +192,21 @@ def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, i
     return (j_lo + 1, j_hi)
 
 
+def assurance_interval(a: float, *args) -> Optional[tuple[Any, Any]]:
+    """Returns assurance interval for middle a (0<a<1) fraction of samples, if possible.
+    Same as tolerance interval for fraction a with confidence a.
+    Use this method if you data is not sorted already, else you can use assurance_interval_places.
+    Returns None if not possible.
+    args is any iterable (list, tuple, set)
+    """
+    n = len(*args)
+    ii = assurance_interval_locs(n, a)
+    # Need to subtract 1 from the places, to account for 0-based index
+    return (
+        tuple(sorted(*args)[slice(ii[0] - 1, ii[1], ii[1] - ii[0])]) if ii else None  # type: ignore
+    )
+
+
 def assurance_interval_locs(n: int, a: float) -> Optional[tuple[int, int]]:
     """Returns assurance interval locations. Out of n sorted samples, a fraction of a samples
     are expected to be within these two locations, with a probability of at least a.

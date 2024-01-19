@@ -2,6 +2,7 @@ import pytest
 
 from relistats.intervals import (
     assurance_in_interval,
+    assurance_interval,
     confidence_interval_of_mean,
     confidence_interval_of_median,
     confidence_interval_of_percentile,
@@ -104,6 +105,20 @@ def test_tolerance_interval() -> None:
 
 
 def test_assurance_interval() -> None:
+    arr = range(10, 30)
+    assert assurance_interval(0.75, arr) == (12, 29)
+    assert assurance_interval(0.5, arr) == (14, 25)
+    assert assurance_interval(0.8, arr) == (11, 29)
+    assert assurance_interval(0.9, arr) is None
+
+    arr_float = [k * 0.1 for k in range(10, 70)]
+    assert assurance_interval(0.8, arr_float) == (
+        pytest.approx(1.4, abs=0.01),
+        pytest.approx(6.6, abs=0.01),
+    )
+
+
+def test_assurance_in_interval() -> None:
     assert assurance_in_interval(1, 15, 16) == pytest.approx(0.818, 0.001)
     assert assurance_in_interval(1, 37, 38) == pytest.approx(0.901, 0.001)
     assert assurance_in_interval(9, 28, 38) == pytest.approx(0.686, 0.001)

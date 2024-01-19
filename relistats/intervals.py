@@ -217,14 +217,6 @@ def assurance_interval_locs(n: int, a: float) -> Optional[tuple[int, int]]:
     return tolerance_interval_locs(n, a, a)
 
 
-def _assurance_interval_fn(x: float, j_lo: int, j_hi: int, n: int) -> float:
-    """Function to find roots of x = confidence_in_quantile(n, f, x)"""
-    x_hi_hat = confidence_in_percentile(j_hi, n, x) or 0
-    x_lo_hat = confidence_in_percentile(j_lo, n, 1 - x) or 0
-    x_hat = min(x_hi_hat, 1 - x_lo_hat)
-    return x_hat - x
-
-
 def assurance_in_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[float]:
     """Assurance level for interval [j_lo, j_hi] out of n sorted samples. Assurance
     level of a means a% of samples will be within this interval with a% confidence.
@@ -263,3 +255,11 @@ def assurance_in_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[f
         args=(j_lo, j_hi, n),
         xtol=tol,
     )
+
+
+def _assurance_interval_fn(x: float, j_lo: int, j_hi: int, n: int) -> float:
+    """Function to find roots of x = confidence_in_quantile(n, f, x)"""
+    x_hi_hat = confidence_in_percentile(j_hi, n, x) or 0
+    x_lo_hat = confidence_in_percentile(j_lo, n, 1 - x) or 0
+    x_hat = min(x_hi_hat, 1 - x_lo_hat)
+    return x_hat - x

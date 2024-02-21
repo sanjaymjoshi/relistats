@@ -1,4 +1,4 @@
-"""Statistical methods for quantiles and tolerance interval
+"""Statistical methods for percentiles or quantiles and tolerance interval
 """
 from typing import Optional
 

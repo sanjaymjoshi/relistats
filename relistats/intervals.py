@@ -184,7 +184,7 @@ def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, i
     while c_lo := confidence_in_percentile(j_lo, n, p_lo) < 1 - c / c_hi:
         logger.debug("p_lo = %f, j_lo = %d, c_lo = %f", p_lo, j_lo, c_lo)
         j_lo += 1
-        if j_lo == median_index:
+        if j_lo == median_index:  # pragma: no cover
             logger.error(
                 "Not enough samples, %d, for tolerance %f, confidence %f", n, t, c
             )

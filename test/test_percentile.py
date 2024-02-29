@@ -72,3 +72,9 @@ def test_confidence_in_quantile_at_index() -> None:
 
 def test_assurance_in_quantile() -> None:
     assert assurance_in_percentile(14, 20) == pytest.approx(0.635, abs=0.001)
+
+
+def test_invalids() -> None:
+    assert assurance_in_percentile(0, 0) is None
+    assert assurance_in_percentile(-1, 0) is None
+    assert assurance_in_percentile(10, 9) is None

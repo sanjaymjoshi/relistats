@@ -127,3 +127,19 @@ def test_assurance_in_interval() -> None:
     assert assurance_in_interval(3, 34, 38) == pytest.approx(0.824, 0.001)
     assert assurance_in_interval(2, 36, 38) == pytest.approx(0.874, 0.001)
     assert assurance_in_interval(1, 93, 94) == pytest.approx(0.951, 0.001)
+
+
+def test_invalids() -> None:
+    assert percentile_interval_locs(0, 0.5, 0.5) is None
+    assert percentile_interval_locs(10, -0.5, 0.5) is None
+    assert percentile_interval_locs(10, 0.5, -0.5) is None
+    assert percentile_interval_locs(10, 0.99, 0.99) is None
+
+    assert tolerance_interval_locs(0, 0.5, 0.5) is None
+    assert tolerance_interval_locs(10, -0.5, 0.5) is None
+    assert tolerance_interval_locs(10, 0.5, -0.5) is None
+    assert tolerance_interval_locs(10, 0.99, 0.99) is None
+
+    assert assurance_in_interval(-1, 10, 10) is None
+    assert assurance_in_interval(10, 9, 20) is None
+    assert assurance_in_interval(10, 9, -1) is None

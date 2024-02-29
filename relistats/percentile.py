@@ -1,5 +1,6 @@
 """Statistical methods for percentiles or quantiles and tolerance interval
 """
+
 from typing import Optional
 
 import scipy.optimize as opt

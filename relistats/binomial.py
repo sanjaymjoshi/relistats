@@ -7,6 +7,7 @@ S.M. Joshi, "Computation of Reliability Statistics for
 Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
 https://doi.org/10.48550/arXiv.2303.03167
 """
+
 from math import sqrt
 from typing import Optional
 

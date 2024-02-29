@@ -14,5 +14,9 @@
         "venv",
         "xtol"
     ],
-    "esbonio.sphinx.confDir": ""
+    "esbonio.sphinx.confDir": "",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+      }
 }

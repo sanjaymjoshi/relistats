@@ -1,5 +1,6 @@
 """Statistical methods for confidence and tolerance intervals
 """
+
 from typing import Any, Optional
 
 import scipy.optimize as opt

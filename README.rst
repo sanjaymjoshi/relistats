@@ -1,5 +1,10 @@
-Reliability Statistics
-======================
+Reliable Statistics
+===================
+
+Statistics often get bad rap for being inaccurate or misleading. They are after all
+guesses. We can improve their quality by adding information about confidence in
+these numbers. This project provides tools to compute the confidence levels.
+Example of usage in real-life situations is reliability engineering.
 
 Reliability engineering deals with estimating parameters or qualities of a product or
 process or experiment. For simplicity, we assume that all units of a product or results

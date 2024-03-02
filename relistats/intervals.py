@@ -1,4 +1,8 @@
-"""Statistical methods for confidence and tolerance intervals
+"""Statistical methods for confidence and tolerance intervals.
+
+Reference:
+S.M. Joshi, "Confidence and Assurance of Percentiles," arXiv:2402.19109 [stat.ME], Feb 2024.
+https://doi.org/10.48550/arXiv.2402.19109
 """
 
 from typing import Any, Optional

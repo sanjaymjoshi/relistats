@@ -1,4 +1,8 @@
-"""Statistical methods for percentiles or quantiles and tolerance interval
+"""Statistical methods for percentiles or quantiles and tolerance interval.
+
+Reference:
+S.M. Joshi, "Confidence and Assurance of Percentiles," arXiv:2402.19109 [stat.ME], Feb 2024.
+https://doi.org/10.48550/arXiv.2402.19109
 """
 
 from typing import Optional

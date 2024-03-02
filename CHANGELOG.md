@@ -7,7 +7,7 @@
 - Added automatic unit testing for python 3.12 
 
 ## 1.1.0
-- Added `binon_fin` module for finite population sizes
+- Added `binom_fin` module for finite population sizes
 
 ## 1.0.0
 - First release with `binomial` module

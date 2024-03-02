@@ -18,7 +18,9 @@ def confidence_in_percentile(j: int, n: int, p: float) -> float:
     pp^th percentile/quantile (0 < p < 1) is greater than j samples, 1 <= j <= n.
 
     From https://online.stat.psu.edu/stat415/lesson/19/19.2
-    c = sum_{k=0}^{j-1} nCk * p^k * (1-p)^(n-k)
+
+    .. math::
+        c = \sum_{k=0}^{j-1} {n\choose k}  p^k  (1-p)^{n-k} # noqa: W605
 
     This is same as cumulative density function for a binomial
     distribution, evaluated at j-1 out of n samples.

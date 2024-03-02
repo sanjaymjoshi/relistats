@@ -23,7 +23,7 @@ relistats.binom_fin module
    :show-inheritance:
 
 relistats.intervals module
--------------------------
+--------------------------
 
 .. automodule:: relistats.intervals
    :members:
@@ -31,7 +31,7 @@ relistats.intervals module
    :show-inheritance:
 
 relistats.percentile module
---------------------------
+---------------------------
 
 .. automodule:: relistats.percentile
    :members:

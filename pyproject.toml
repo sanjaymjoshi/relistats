@@ -26,7 +26,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/sanjaymjoshi/relistats"
-Documentation = "https://readthedocs.org"
+Documentation = "https://relistats.readthedocs.io/en/latest/"
 Repository = "https://github.com/sanjaymjoshi/relistats"
 "Bug Tracker" = "https://github.com/sanjaymjoshi/relistats/issues"
 Changelog = "https://github.com/sanjaymjoshi/relistats/blob/main/CHANGELOG.md"

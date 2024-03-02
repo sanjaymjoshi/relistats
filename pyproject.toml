@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "relistats"
+version = "1.1.0"
+dependencies = [
+  "scipy",
+]
+requires-python = ">=3.10"
+authors = [
+  {name = "Sanjay Joshi", email = "sanjaymjoshi@iitbombay.org"},
+]
+maintainers = [
+  {name = "Sanjay Joshi", email = "sanjaymjoshi@iitbombay.org"},
+]
+description = "Reliable Statistics"
+readme = "README.rst"
+license = {text = "MIT License"}
+keywords = ["statistics", "reliability", "confidence", "assurance", "percentile"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.urls]
+Homepage = "https://github.com/sanjaymjoshi/relistats"
+Documentation = "https://readthedocs.org"
+Repository = "https://github.com/sanjaymjoshi/relistats"
+"Bug Tracker" = "https://github.com/sanjaymjoshi/relistats/issues"
+Changelog = "https://github.com/sanjaymjoshi/relistats/blob/main/CHANGELOG.md"
+
+[tool.flake8]
+ignore = ["E203", "E266", "E501", "W503"]
+max-line-length = 88
+max-complexity = 18
+select = ["B", "C", "E", "F", "W", "T4"]
+
+[tool.isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+
+[tool.mypy]
+files = ["relistats", "test"]
+ignore_missing_imports = true
+
+[tool.pytest]
+testpaths = "test/"

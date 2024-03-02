@@ -5,9 +5,21 @@
     "language": "en",
     // words - list of words to be always considered correct
     "words": [
+        "expon",
+        "kdeplot",
+        "labelbottom",
+        "labelleft",
+        "lineplot",
         "quantile",
         "tmean",
-        "tstd"
+        "triang",
+        "tstd",
+        "xaxis",
+        "xlabel",
+        "xytext",
+        "yaxis",
+        "ylabel",
+        "ylim"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.

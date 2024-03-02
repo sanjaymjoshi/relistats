@@ -22,6 +22,22 @@ relistats.binom_fin module
    :undoc-members:
    :show-inheritance:
 
+relistats.intervals module
+-------------------------
+
+.. automodule:: relistats.intervals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+relistats.percentile module
+--------------------------
+
+.. automodule:: relistats.percentile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

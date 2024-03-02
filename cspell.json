@@ -5,9 +5,32 @@
     "language": "en",
     // words - list of words to be always considered correct
     "words": [
+        "barh",
+        "expon",
+        "isort",
+        "kdeplot",
+        "labelbottom",
+        "labelleft",
+        "lightpink",
+        "lineplot",
+        "linewidth",
+        "Loosers",
+        "mypy",
+        "pipenv",
+        "pyproject",
+        "pytest",
         "quantile",
+        "Tighters",
         "tmean",
-        "tstd"
+        "triang",
+        "tstd",
+        "xaxis",
+        "xlabel",
+        "xlim",
+        "xytext",
+        "yaxis",
+        "ylabel",
+        "ylim"
     ],
     // flagWords - list of words to be always considered incorrect
     // This is useful for offensive words and common spelling errors.

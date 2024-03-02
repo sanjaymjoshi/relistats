@@ -5,6 +5,10 @@ verify_ssl = true
 
 [packages]
 relistats = {editable = true, path = "."}
+ipykernel = "*"
+matplotlib = "*"
+pexpect = "*"
+seaborn = "*"
 
 [dev-packages]
 black = "*"
@@ -17,3 +21,4 @@ pytest = "*"
 pytest-cov = "*"
 build = "*"
 twine = "*"
+flake8-pyproject = "*"

@@ -25,7 +25,7 @@ def confidence_in_percentile(j: int, n: int, p: float) -> float:
     This is same as cumulative density function for a binomial
     distribution, evaluated at j-1 out of n samples.
 
-    Note that j=n+1 will return 1.
+    Note that :math:`j=n+1` will return 1.
     """
     return stats.binom.cdf(j - 1, n, p)
 

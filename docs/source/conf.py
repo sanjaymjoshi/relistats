@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath("."))
 sys.path.insert(0, os.path.abspath(".."))
 
 
-project = "Reliability Statistics"
+project = "Reliable Statistics"
 copyright = "2023, Sanjay M Joshi"
 author = "Sanjay M Joshi"
 

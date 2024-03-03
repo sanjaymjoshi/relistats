@@ -15,28 +15,28 @@ from relistats.percentile import _num_samples_invalid, confidence_in_percentile
 
 
 def confidence_interval_of_mean(c: float, *args) -> tuple[Any, Any]:
-    """Confidence interval of mean of args at confidence level c.
+    """Confidence interval of mean of `args` at confidence level `c`.
 
     :param c: confidence level
-    :type c: float, 0 < c < 1
+    :type c: float, `0 < c < 1`
     :param args: array of values
     :type args: array_like of type that supports computation of mean
     :return: confidence interval
-    :rtype: tuple of same type as args
+    :rtype: tuple of same type as `args`
     """
     mean, sem = stats.tmean(*args), stats.sem(*args)
     return stats.norm.interval(c, loc=mean, scale=sem)
 
 
 def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
-    """Confidence interval of median of args at confidence level c.
+    """Confidence interval of median of `args` at confidence level `c`.
 
     :param c: confidence level
-    :type c: float, 0 < c < 1
+    :type c: float, `0 < c < 1`
     :param args: array of values
     :type args: array_like of type that supports computation of mean
     :return: confidence interval or None
-    :rtype: tuple of same type as args or None
+    :rtype: tuple of same type as `args` or None
     """
     return confidence_interval_of_percentile(0.5, c, *args)
 
@@ -44,19 +44,19 @@ def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
 def confidence_interval_of_percentile(
     p: float, c: float, *args
 ) -> Optional[tuple[Any, Any]]:
-    """p'th percentile/quantile interval of args at confidence level c.
+    """`p`'th percentile/quantile interval of `args` at confidence level `c`.
 
     Use this method if you data is not sorted already, else you can use
     :meth:`relistats.intervals.percentile_interval_locs`.
 
     :param p: percentile/quantile level
-    :type p: float, 0 < p < 1
+    :type p: float, `0 < p < 1`
     :param c: confidence level
-    :type c: float, 0 < c < 1
+    :type c: float, `0 < c < 1`
     :param args: array of values
     :type args: array_like of type that supports computation of mean
     :return: confidence interval
-    :rtype: tuple of same type as args
+    :rtype: tuple of same type as `args`
     """
     n = len(*args)
     ii = percentile_interval_locs(n, p, c)
@@ -67,9 +67,10 @@ def confidence_interval_of_percentile(
 
 
 def percentile_interval_locs(n: int, p: float, c: float) -> Optional[tuple[int, int]]:
-    """Tuple of two locations (1...n) such that percentile/quantile p
-    lies within these two locations of n sorted samples with confidence
-    of at least c.
+    """Tuple of two locations `(1...n)` such that percentile/quantile `p`
+    lies within these two locations of `n` sorted samples with confidence
+    of at least `c`. Return `None` if such a tuple cannot be computed. If that happens,
+    try to increase `n`, reduce `p`, or reduce `c`.
 
     Note that the locations are indexed at 1 and not zero!
 
@@ -80,14 +81,11 @@ def percentile_interval_locs(n: int, p: float, c: float) -> Optional[tuple[int, 
     :param n: number of samples
     :type n: int
     :param p: percentile/quantile level
-    :type p: float, 0 < p < 1
+    :type p: float, `0 < p < 1`
     :param c: confidence level
-    :type c: float, 0 < c < 1
-    :return: percentile interval
+    :type c: float, `0 < c < 1`
+    :return: percentile interval locations (1-based)
     :rtype: tuple of int of None
-
-    Return None if such a tuple cannot be computed. If that happens, try to increase n,
-    reduce p, or reduce c.
     """
     if _percentile_invalid(p) or _confidence_invalid(c) or _num_samples_invalid(n):
         return None
@@ -161,11 +159,19 @@ def _percentile_interval_locs_candidates(
 
 
 def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
-    """Returns tolerance interval for middle t (0<t<1) fraction of samples,
-    with confidence c (0<c<1), if possible.
-    Use this method if you data is not sorted already, else you can use tolerance_interval_places.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
+    """Tolerance interval for middle `t` fraction of samples, with confidence c.
+
+    Use this method if you data is not sorted already, else you can use
+    :meth:`relistats.intervals.tolerance_interval_locs`.
+
+    :param t: tolerance level
+    :type t: float, `0 < t < 1`
+    :param c: confidence level
+    :type c: float, `0 < c < 1`
+    :param args: array of values
+    :type args: array_like of type that supports computation of mean
+    :return: confidence interval
+    :rtype: tuple of same type as `args`
     """
     n = len(*args)
     ii = tolerance_interval_locs(n, t, c)
@@ -176,12 +182,20 @@ def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
 
 
 def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tolerance interval locations. Out of n sorted samples, a fraction of t samples
-    (0 < t < 1) are expected to be within these two places, with a probability of at least c,
-    0 < c < 1.
+    """Tolerance interval locations. Out of `n` sorted samples, a fraction of `t` samples
+    are expected to be within these two places, with a probability of at least `c`.
 
-    Returns None if such tuple cannot be calculated. If that happens, try to increase n,
-    reduce t, or reduce c.
+    Returns `None` if such tuple cannot be calculated. If that happens, try to increase `n`,
+    reduce `t`, or reduce `c`.
+
+    :param n: number of samples
+    :type n: int
+    :param t: tolerance interval level
+    :type t: float, `0 < t < 1`
+    :param c: confidence level
+    :type c: float, `0 < c < 1`
+    :return: tolerance interval locations (1-based)
+    :rtype: tuple of int of None
     """
     if _percentile_invalid(t) or _confidence_invalid(c) or _num_samples_invalid(n):
         return None
@@ -230,11 +244,18 @@ def tolerance_interval_locs(n: int, t: float, c: float) -> Optional[tuple[int, i
 
 
 def assurance_interval(a: float, *args) -> Optional[tuple[Any, Any]]:
-    """Returns assurance interval for middle a (0<a<1) fraction of samples, if possible.
-    Same as tolerance interval for fraction a with confidence a.
-    Use this method if you data is not sorted already, else you can use assurance_interval_places.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
+    """Assurance interval for middle `a` fraction of samples, if possible.
+    Same as tolerance interval for fraction `a` with confidence `a`.
+
+    Use this method if you data is not sorted already, else you can use
+    :meth:`relistats.intervals.assurance_interval_locs`.
+
+    :param a: assurance level
+    :type a: float, `0 < a < 1`
+    :param args: array of values
+    :type args: array_like of type that supports computation of mean
+    :return: assurance interval
+    :rtype: tuple of same type as `args`
     """
     n = len(*args)
     ii = assurance_interval_locs(n, a)
@@ -245,30 +266,36 @@ def assurance_interval(a: float, *args) -> Optional[tuple[Any, Any]]:
 
 
 def assurance_interval_locs(n: int, a: float) -> Optional[tuple[int, int]]:
-    """Returns assurance interval locations. Out of n sorted samples, a fraction of a samples
-    are expected to be within these two locations, with a probability of at least a.
+    """Assurance interval locations. Out of `n` sorted samples a fraction of `a` samples
+    are expected to be within these two locations, with a probability of at least `a`.
 
-    Returns None if such tuple cannot be calculated. If that happens, try to increase n
-    or reduce a.
+    Returns `None` if such tuple cannot be calculated. If that happens, try to increase `n`,
+    or reduce `a`.
+
+    :param n: number of samples
+    :type n: int
+    :param a: assurance level
+    :type a: float, `0 < a < 1`
+    :return: assurance interval locations (1-based)
+    :rtype: tuple of int of None
     """
     return tolerance_interval_locs(n, a, a)
 
 
 def assurance_in_interval(j_lo: int, j_hi: int, n: int, tol=0.001) -> Optional[float]:
-    """Assurance level for interval [j_lo, j_hi] out of n sorted samples. Assurance
-    level of a means a% of samples will be within this interval with a% confidence.
+    """Assurance level for interval [`j_lo`, `j_hi`] out of `n` sorted samples. Assurance
+    level of `a` means `a%` of samples will be within this interval with `a%` confidence.
     Example: Out of 16 ordered samples, we can be 80% confident that 80% samples will
     be between 1st and 15th place.
 
     :param j_lo: sample place at lower end
     :type j_lo: int, >0
     :param j_hi: sample place at upper end
-    :type j_hi: int, n > j_hi > j_lo
+    :type j_hi: int, `n > j_hi > j_lo`
     :param n: number of samples
     :type n: int, >=0
     :param tol: accuracy tolerance
     :type tol: float, optional
-
     :return: Assurance or None if it could not be computed
     :rtype: float, optional
     """

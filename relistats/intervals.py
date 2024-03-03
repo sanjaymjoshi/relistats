@@ -15,15 +15,28 @@ from relistats.percentile import _num_samples_invalid, confidence_in_percentile
 
 
 def confidence_interval_of_mean(c: float, *args) -> tuple[Any, Any]:
-    """Returns confidence interval of mean from args at confidence of c, 0 < c < 1"""
+    """Confidence interval of mean of args at confidence level c.
+
+    :param c: confidence level
+    :type c: float, 0 < c < 1
+    :param args: array of values
+    :type args: array_like of type that supports computation of mean
+    :return: confidence interval
+    :rtype: tuple of same type as args
+    """
     mean, sem = stats.tmean(*args), stats.sem(*args)
     return stats.norm.interval(c, loc=mean, scale=sem)
 
 
 def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
-    """Returns median interval from args at confidence of at least c, if possible.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
+    """Confidence interval of median of args at confidence level c.
+
+    :param c: confidence level
+    :type c: float, 0 < c < 1
+    :param args: array of values
+    :type args: array_like of type that supports computation of mean
+    :return: confidence interval or None
+    :rtype: tuple of same type as args or None
     """
     return confidence_interval_of_percentile(0.5, c, *args)
 
@@ -31,10 +44,19 @@ def confidence_interval_of_median(c: float, *args) -> Optional[tuple[Any, Any]]:
 def confidence_interval_of_percentile(
     p: float, c: float, *args
 ) -> Optional[tuple[Any, Any]]:
-    """Returns p'th percentile/quantile interval from args at confidence of at least c, if possible.
-    Use this method if you data is not sorted already, else you can use quantile_interval_places.
-    Returns None if not possible.
-    args is any iterable (list, tuple, set)
+    """p'th percentile/quantile interval of args at confidence level c.
+
+    Use this method if you data is not sorted already, else you can use
+    :meth:`relistats.intervals.percentile_interval_locs`.
+
+    :param p: percentile/quantile level
+    :type p: float, 0 < p < 1
+    :param c: confidence level
+    :type c: float, 0 < c < 1
+    :param args: array of values
+    :type args: array_like of type that supports computation of mean
+    :return: confidence interval
+    :rtype: tuple of same type as args
     """
     n = len(*args)
     ii = percentile_interval_locs(n, p, c)
@@ -45,14 +67,24 @@ def confidence_interval_of_percentile(
 
 
 def percentile_interval_locs(n: int, p: float, c: float) -> Optional[tuple[int, int]]:
-    """Returns tuple of two locations (1..n) such that percentile/quantile p
-    (0 < p < 1) lies within these two locations of n sorted samples with confidence
-    of at least c (0 < c < 1).
+    """Tuple of two locations (1...n) such that percentile/quantile p
+    lies within these two locations of n sorted samples with confidence
+    of at least c.
 
     Note that the locations are indexed at 1 and not zero!
 
-    Use this method if you plan to sort samples yourself, else you can use
-    confidence_interval_of_quantile method.
+    Use this method if you plan to sort samples yourself or you need only the locations.
+    If your array is sorted already, you can use
+    :meth:`relistats.intervals.confidence_interval_of_percentile`.
+
+    :param n: number of samples
+    :type n: int
+    :param p: percentile/quantile level
+    :type p: float, 0 < p < 1
+    :param c: confidence level
+    :type c: float, 0 < c < 1
+    :return: percentile interval
+    :rtype: tuple of int of None
 
     Return None if such a tuple cannot be computed. If that happens, try to increase n,
     reduce p, or reduce c.

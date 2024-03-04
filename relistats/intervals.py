@@ -170,7 +170,7 @@ def tolerance_interval(t: float, c: float, *args) -> Optional[tuple[Any, Any]]:
     :type c: float, `0 < c < 1`
     :param args: array of values
     :type args: array_like of type that supports computation of mean
-    :return: confidence interval
+    :return: tolerance interval
     :rtype: tuple of same type as `args`
     """
     n = len(*args)

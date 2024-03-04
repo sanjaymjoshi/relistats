@@ -15,8 +15,8 @@ from relistats import logger
 
 
 def confidence_in_percentile(j: int, n: int, p: float) -> float:
-    """Returns confidence (probability) that in a population of n samples,
-    pp^th percentile/quantile (0 < p < 1) is greater than j samples, 1 <= j <= n.
+    """Returns confidence (probability) that in a population of `n` samples,
+    `p`'th percentile/quantile is greater than `j` samples.
 
     From https://online.stat.psu.edu/stat415/lesson/19/19.2
 
@@ -24,9 +24,18 @@ def confidence_in_percentile(j: int, n: int, p: float) -> float:
         c = \sum_{k=0}^{j-1} {n\choose k}  p^k  (1-p)^{n-k}
 
     This is same as cumulative density function for a binomial
-    distribution, evaluated at j-1 out of n samples.
+    distribution, evaluated at `j-1` out of `n` samples.
 
     Note that :math:`j=n+1` will return 1.
+
+    :param j: sample index
+    :type j: int, `1 <= j <= n`
+    :param n: number of samples
+    :type n: int, >=0
+    :param p: percentile/quantile
+    :type p: float `0 < p < 1`
+    :return: Confidence (`0 <= c <= 1`)
+    :rtype: float
     """
     return stats.binom.cdf(j - 1, n, p)
 
@@ -46,17 +55,16 @@ def _assurance_percentile_fn(x: float, j: int, n: int) -> float:
 
 
 def assurance_in_percentile(j: int, n: int, tol=0.001) -> Optional[float]:
-    """Assurance level at j'th index out of n sorted samples. The confidence
-       is at least the percentile/quantile level.
+    """Assurance level at `j`'th index out of `n` sorted samples. The confidence
+    is at least the percentile/quantile level.
 
     :param j: sample index
-    :type j: int, >0
+    :type j: int, `1 <= j <= n`
     :param n: number of samples
     :type n: int, >=0
     :param tol: accuracy tolerance
     :type tol: float, optional
-
-    :return: Assurance or None if it could not be computed
+    :return: Assurance (`0 <= a <= 1`) or None if it could not be computed
     :rtype: float, optional
     """
     if _num_samples_invalid(n):

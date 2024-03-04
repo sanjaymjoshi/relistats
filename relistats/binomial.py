@@ -3,9 +3,9 @@
 Also known as Bernoulli Trials.
 
 Reference:
-S.M. Joshi, "Computation of Reliability Statistics for
-Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
-https://doi.org/10.48550/arXiv.2303.03167
+S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
+`arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_,
+March 2023.
 """
 
 from math import sqrt

@@ -5,8 +5,8 @@ Also known as Bernoulli Trials.
 
 Reference:
 S.M. Joshi, "Computation of Reliability Statistics for finite samples of
-Success-Failure Experiments," arXiv:2305.16578 [cs.IT], May 2023.
-https://doi.org/10.48550/arXiv.2305.16578
+Success-Failure Experiments,"
+`arXiv:2305.16578 [cs.IT] <https://doi.org/10.48550/arXiv.2305.16578>`_, May 2023.
 """
 
 from relistats import logger

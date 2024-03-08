@@ -1,11 +1,10 @@
-""" Reliability Engineering Statistics for Binomial Distributions
-
+""" Reliability Engineering Statistics for Binomial Distributions.
 Also known as Bernoulli Trials.
 
 Reference:
-S.M. Joshi, "Computation of Reliability Statistics for
-Success-Failure Experiments," arXiv:2303.03167 [stat.ME], March 2023.
-https://doi.org/10.48550/arXiv.2303.03167
+S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experiments,"
+`arXiv:2303.03167 [stat.ME] <https://doi.org/10.48550/arXiv.2303.03167>`_,
+March 2023.
 """
 
 from math import sqrt
@@ -16,14 +15,14 @@ import scipy.stats as st
 
 
 def confidence(n: int, f: int, r: float) -> Optional[float]:
-    """Confidence [0, 1] in reliability r using closed-form expression.
+    """Confidence [0, 1] in reliability `r` using closed-form expression.
 
     :param n: number of samples
     :type n: int, >=0
     :param f: number of failures
     :type f: int, >=0
     :param r: reliability level
-    :type r: float, [0, 1]
+    :type r: float, `0 < r < 1`
     :return: Confidence or None if it could not be computed
     :rtype: float, optional
     """
@@ -54,7 +53,7 @@ def _wilson_lower_corrected(p, n, c):
 
 
 def reliability_closed(n: int, f: int, c: float) -> Optional[float]:
-    """Approximate minimum reliability [0, 1] at confidence level c.
+    """Approximate minimum reliability [0, 1] at confidence level `c`.
     The approximation is within about 5% of actual reliability and uses
     closed-form expression for computation called 'Wilson Score Interval
     with Continuity Correction' [Wallis, Sean A. (2013). "Binomial
@@ -67,7 +66,7 @@ def reliability_closed(n: int, f: int, c: float) -> Optional[float]:
     :param f: number of failures
     :type f: int, >=0
     :param c: confidence level
-    :type c: float, [0, 1]
+    :type c: float, `0 < c <1`
     :return: Reliability or None if it could not be computed
     :rtype: float, optional
     """
@@ -84,7 +83,7 @@ def _reliability_fn(x: float, n: int, f: int, c: float) -> float:
 
 
 def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
-    """Minimum reliability [0, 1] at confidence level c using numerical
+    """Minimum reliability [0, 1] at confidence level `c` using numerical
     optimization (Brent's method). The approximation is within specified
     tolerance limit.
 
@@ -93,7 +92,7 @@ def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
     :param f: number of failures
     :type f: int, >=0
     :param c: confidence level
-    :type c: float, [0, 1]
+    :type c: float, `0 < c < 1`
     :param tol: accuracy tolerance
     :type tol: float, optional
 
@@ -115,7 +114,7 @@ def reliability_optim(n: int, f: int, c: float, tol=0.001) -> Optional[float]:
 
 
 def reliability(n: int, f: int, c: float) -> Optional[float]:
-    """Minimum reliability at confidence level c
+    """Minimum reliability at confidence level `c`.
 
     :param n: number of samples
     :type n: int, >=0
@@ -130,14 +129,14 @@ def reliability(n: int, f: int, c: float) -> Optional[float]:
 
 
 def _assurance_fn(x: float, n: int, f: int) -> float:
-    """Function to find roots of x = confidence(n, f, x)"""
+    """Function to find roots of `x = confidence(n, f, x)`"""
     c = confidence(n, f, x) or 0
     return x - c
 
 
 def assurance(n: int, f: int, tol=0.001) -> Optional[float]:
     """Assurance [0, 1], i.e., confidence = reliability. For example,
-    90% assurance means 90% confidence in 90% reliability (at n=22, f=0).
+    90% assurance means 90% confidence in 90% reliability (at `n=22`, `f=0`).
     This method uses numerical approach of Brent's method to compute
     the solution within the specified tolerance.
 

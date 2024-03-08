@@ -1,12 +1,10 @@
 """ Reliability Engineering Statistics for finite population sizes with
-Binomial Distributions
-
-Also known as Bernoulli Trials.
+Binomial Distributions.Also known as Bernoulli Trials.
 
 Reference:
 S.M. Joshi, "Computation of Reliability Statistics for finite samples of
-Success-Failure Experiments," arXiv:2305.16578 [cs.IT], May 2023.
-https://doi.org/10.48550/arXiv.2305.16578
+Success-Failure Experiments,"
+`arXiv:2305.16578 [cs.IT] <https://doi.org/10.48550/arXiv.2305.16578>`_, May 2023.
 """
 
 from relistats import logger
@@ -14,7 +12,7 @@ from relistats.binomial import confidence
 
 
 def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
-    """Confidence [0, 1] in reliability r for finite population size.
+    """Confidence [0, 1] in reliability `r` for finite population size.
     Returns tuple with second value as actual reliability used for computations.
 
     :param n: number of samples tested
@@ -64,7 +62,7 @@ def conf_fin(n: int, f: int, m: int, d: int) -> tuple:
 
 
 def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
-    """Minimum reliability at confidence level c for finite population size.
+    """Minimum reliability at confidence level `c` for finite population size.
     Returns tuple with second value as actual confidence used for computations.
 
     :param n: number of samples
@@ -99,8 +97,8 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
 
 def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     """Assurance [0, 1], i.e., confidence = reliability.
-    Returns tuple with other values as reliability and confidence
-    used for computations.
+    Returns tuple of assurance and actual values of reliability
+    and confidence used for computations.
 
     :param n: number of samples
     :type n: int, >=0

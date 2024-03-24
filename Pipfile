@@ -9,6 +9,7 @@ ipykernel = "*"
 matplotlib = "*"
 pexpect = "*"
 seaborn = "*"
+tabulate = "*"
 
 [dev-packages]
 black = "*"

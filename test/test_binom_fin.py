@@ -48,6 +48,10 @@ def test_conf_fin() -> None:
     assert conf_fin(2, 0, 2, -2) == (None, None)
     assert conf_fin(2, 0, -2, -2) == (None, None)
 
+    assert conf_fin(20, 21, 20, 2) == pytest.approx(
+        (0.0, 0.425), abs=ABS_TOL_CONFIDENCE
+    )
+
 
 def test_reli_fin() -> None:
     ABS_TOL_RELIABILITY = 0.001
@@ -89,3 +93,4 @@ def test_assurance() -> None:
 
     assert assur_fin(2, -2, 2) == (None, 0, 0)
     assert assur_fin(-2, 0, 2) == (None, 0, 0)
+    assert assur_fin(20, 21, 8) == (None, 0, 0)

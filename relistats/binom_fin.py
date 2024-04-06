@@ -95,7 +95,7 @@ def reli_fin(n: int, f: int, c: float, m: int) -> tuple:
     # This line is never reached in pytest!
 
 
-def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
+def assur_fin(n: int, f: int, m: int) -> tuple:
     """Assurance [0, 1], i.e., confidence = reliability.
     Returns tuple of assurance and actual values of reliability
     and confidence used for computations.
@@ -103,15 +103,13 @@ def assur_fin(n: int, f: int, m: int, tol=0.001) -> tuple:
     :param n: number of samples
     :type n: int, >=0
     :param f: number of failures
-    :type f: int, >=0
+    :type f: int, 0 <= f <= n
     :param m: remaining samples in population
     :type m: int, >= 0
-    :param tol: accuracy tolerance
-    :type tol: float, optional
     :return: (Assurance, reliability, confidence)
     :rtype: tuple
     """
-    if n <= 0 or f < 0:
+    if n <= 0 or f < 0 or n < f:
         return (None, 0, 0)
 
     # Calculate confidence for each case of remaining failures

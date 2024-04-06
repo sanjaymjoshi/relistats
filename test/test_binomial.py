@@ -106,6 +106,7 @@ def test_assurance() -> None:
     assert assurance(22, 2) == pytest.approx(0.812, abs=0.001)
     assert assurance(59, 6) == pytest.approx(0.842, abs=0.001)
     assert assurance(59, 10, 0.0001) == pytest.approx(0.7798, abs=0.0001)
+    assert assurance(20, 21) == pytest.approx(0.0, abs=0.001)
 
     assert assurance(2, -2) is None
     assert assurance(-2, 0) is None

@@ -33,6 +33,9 @@ Concepts
 This library provides methods to calculate these statistics for infinite and finite
 population sizes.
 
+It also includes interactive notebooks that you can access on Google colab:
+1. [Reliability and Confidence](https://colab.research.google.com/github/sanjaymjoshi/relistats/blob/main/examples/01_reliability_confidence.ipynb)
+
 Example usage in a python file:
 
 .. code-block:: python
@@ -41,7 +44,7 @@ Example usage in a python file:
    
    n = 22
    a = assurance(n, 0) or 0
-   print(f"Assurance at {n} good samples: {a*100:.1f}%")
+   print(f"Assurance at {n} good samples: {a:.1%}%")
 
 References
 ----------

@@ -34,7 +34,7 @@ This library provides methods to calculate these statistics for infinite and fin
 population sizes.
 
 It also includes interactive notebooks that you can access on Google colab:
-1. [Reliability and Confidence](https://colab.research.google.com/github/sanjaymjoshi/relistats/blob/main/example/01_reliability_confidence.ipynb)
+1. [Reliability and Confidence](https://colab.research.google.com/github/sanjaymjoshi/relistats/blob/main/examples/01_reliability_confidence.ipynb)
 
 Example usage in a python file:
 

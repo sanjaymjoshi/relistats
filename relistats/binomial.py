@@ -7,7 +7,7 @@ S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experimen
 March 2023.
 """
 
-from math import sqrt
+from math import pow, sqrt
 from typing import Optional
 
 import scipy.optimize as opt
@@ -125,7 +125,11 @@ def reliability(n: int, f: int, c: float) -> Optional[float]:
     :return: Reliability or None if it could not be computed
     :rtype: float, optional
     """
-    return reliability_optim(n, f, c)
+    if n <= 0 or f < 0 or f > n or c < 0 or c > 1:
+        return None
+    # zero failures case has a closed form solution
+    # c = 1 - r^n => r = (1-c)^(1/n)
+    return pow(1 - c, 1.0 / n) if f == 0 else reliability_optim(n, f, c)
 
 
 def _assurance_fn(x: float, n: int, f: int) -> float:

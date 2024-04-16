@@ -5,6 +5,7 @@ import pytest
 from relistats.binomial import (
     assurance,
     confidence,
+    min_samples,
     reliability,
     reliability_closed,
     reliability_optim,
@@ -110,3 +111,8 @@ def test_assurance() -> None:
 
     assert assurance(2, -2) is None
     assert assurance(-2, 0) is None
+
+
+def test_min_samples() -> None:
+    assert min_samples(0.9, 0.9, 0) == 22
+    assert min_samples(0.95, 0.95, 0) == 59

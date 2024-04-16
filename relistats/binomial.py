@@ -7,7 +7,7 @@ S.M. Joshi, "Computation of Reliability Statistics for Success-Failure Experimen
 March 2023.
 """
 
-from math import pow, sqrt
+from math import ceil, log, pow, sqrt
 from typing import Optional
 
 import scipy.optimize as opt
@@ -164,3 +164,24 @@ def assurance(n: int, f: int, tol=0.001) -> Optional[float]:
         args=(n, f),
         xtol=tol,
     )
+
+
+def min_samples(r: float, c: float, f: int) -> Optional[int]:
+    """Minimum number of samples needed for reliability `r`
+    at confidence level `c` with `f` failures.
+
+    :param r: reliability level
+    :type r: float, (0, 1)
+    :param c: confidence level
+    :type c: float, (0, 1)
+    :param f: number of failures
+    :type f: int, >=0
+    :return: Minimum number of samples needed or None if it could not be computed
+    :rtype: int, optional
+    """
+    if r <= 0 or r >= 1 or c <= 0 or c >= 1 or f < 0:
+        return None
+    if f == 0:
+        return ceil(log(1 - c) / log(r))
+    else:
+        return None

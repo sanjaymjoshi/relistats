@@ -116,3 +116,6 @@ def test_assurance() -> None:
 def test_min_samples() -> None:
     assert min_samples(0.9, 0.9, 0) == 22
     assert min_samples(0.95, 0.95, 0) == 59
+
+    assert min_samples(0.9, 0.9, 1) == 38
+    assert min_samples(0.95, 0.95, 1) == 93

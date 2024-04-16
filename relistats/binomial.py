@@ -166,6 +166,38 @@ def assurance(n: int, f: int, tol=0.001) -> Optional[float]:
     )
 
 
+def _samples_fn(x: float, r: float, c: float, f: int) -> float:
+    """Function to find roots of `c = confidence(x, f, r)`"""
+    n = ceil(x)
+    c_candidate = confidence(n, f, r) or 0
+    return c - c_candidate
+
+
+def _min_samples_optim(r: float, c: float, f: int) -> Optional[int]:
+    """Runs optimization algorithm to find minimum n"""
+    lowest_n = min_samples(r, c, 0) or 1
+    highest_n = lowest_n
+    c_candidate = confidence(highest_n, f, r) or 0
+    while c_candidate < c:
+        highest_n *= 2
+        c_candidate = confidence(highest_n, f, r) or 0
+
+    n_opt = opt.brentq(
+        _samples_fn,
+        a=lowest_n,  # Lowest possible value
+        b=highest_n,  # Highest possible value
+        args=(r, c, f),
+        xtol=0.1,
+    )
+    n_candidate = ceil(n_opt)
+    c_candidate = confidence(n_candidate, f, r) or 0
+    while c_candidate < c:
+        n_candidate += 1
+        c_candidate = confidence(n_candidate, f, r) or 0
+
+    return n_candidate
+
+
 def min_samples(r: float, c: float, f: int) -> Optional[int]:
     """Minimum number of samples needed for reliability `r`
     at confidence level `c` with `f` failures.
@@ -184,4 +216,4 @@ def min_samples(r: float, c: float, f: int) -> Optional[int]:
     if f == 0:
         return ceil(log(1 - c) / log(r))
     else:
-        return None
+        return _min_samples_optim(r, c, f)

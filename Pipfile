@@ -10,6 +10,8 @@ matplotlib = "*"
 pexpect = "*"
 seaborn = "*"
 tabulate = "*"
+numpy = "*"
+asttokens = "*"
 
 [dev-packages]
 black = "*"
